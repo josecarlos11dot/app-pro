@@ -4,12 +4,18 @@
 
 // 🌐 Config: cambia aquí según el entorno
 // Puedes definir window.API_BASE_OVERRIDE en un <script> antes de cargar este archivo
-const API_BASE = ''; // relativo en prod
-  window.API_BASE_OVERRIDE ||
-  'http://localhost:3000'; // desarrollo local
+const API_BASE =
+  (typeof window !== 'undefined' && window.API_BASE_OVERRIDE)
+    ? window.API_BASE_OVERRIDE
+    : ''; // relativo en prod
 
 // 📥 Importar función oficial desde registro.js
 import { abrirFormulario } from './registro.js';
+
+// ===============================
+// Estado: pendiente en edición
+// ===============================
+let pendienteEnEdicion = null; // { id, card, placa }
 
 // 🔧 Helpers
 const horaCorta = () =>
@@ -122,7 +128,6 @@ async function consumirPendienteEnBackend(id) {
   }
 }
 
-
 // ===============================
 // UI: tarjeta pendiente
 // ===============================
@@ -162,25 +167,71 @@ function agregarPlacaPendiente(data) {
     </div>
   `;
 
-  tarjeta.querySelector('.btn-registrar').addEventListener('click', async () => {
+  const btn = tarjeta.querySelector('.btn-registrar');
+
+  btn.addEventListener('click', () => {
+    // ⚠️ NO BORRAR aquí. Solo marcar que está en edición y abrir el modal.
+    pendienteEnEdicion = { id, card: tarjeta, placa: String(placa).toUpperCase() };
+
     if (inputPlaca) {
-      inputPlaca.value = String(placa).toUpperCase();
+      inputPlaca.value = pendienteEnEdicion.placa;
       inputPlaca.dispatchEvent(new Event('change'));
     }
 
-    abrirPopupRegistro();
-    tarjeta.remove();
+    // feedback visual
+    btn.disabled = true;
+    btn.textContent = 'En edición…';
 
-    if (id != null) {
-      const ok = await consumirPendienteEnBackend(id);
-      if (!ok) {
-        console.warn('No se pudo consumir en backend, se re-renderizará en el próximo polling.');
-      }
-    }
+    abrirPopupRegistro();
   });
 
   contenedorPendientes.appendChild(tarjeta);
 }
+
+// ===============================
+// Hooks para completar/cancelar edición
+// ===============================
+
+// Llamar cuando el guardado fue exitoso (desde registro.js)
+async function finalizarEdicionTrasGuardado() {
+  if (!pendienteEnEdicion) return;
+  const { id, card } = pendienteEnEdicion;
+
+  if (id != null) {
+    const okDel = await consumirPendienteEnBackend(id); // borra en backend
+    if (okDel) {
+      try { card.remove(); } catch {}
+    } else {
+      // Si falló el delete, reactivamos botón para intentar de nuevo luego
+      const b = card.querySelector('.btn-registrar');
+      if (b) { b.disabled = false; b.textContent = 'Registrar'; }
+      console.warn('No se pudo eliminar el pendiente después de guardar');
+      pendienteEnEdicion = null;
+      return;
+    }
+  }
+  pendienteEnEdicion = null;
+}
+
+// Llamar si el modal se cerró/canceló sin guardar
+function cancelarEdicion() {
+  if (!pendienteEnEdicion) return;
+  const { card } = pendienteEnEdicion;
+  const b = card.querySelector('.btn-registrar');
+  if (b) { b.disabled = false; b.textContent = 'Registrar'; }
+  pendienteEnEdicion = null;
+}
+
+// Exponer helpers globales para que registro.js pueda invocarlos fácilmente
+window.onRegistroGuardado = (detail = {}) => {
+  // Opcional: podrías validar con detail.placa si quieres
+  finalizarEdicionTrasGuardado();
+};
+window.onRegistroCancelado = () => cancelarEdicion();
+
+// También aceptamos eventos del tipo CustomEvent por si prefieres dispatchEvent
+window.addEventListener('registro:guardado', finalizarEdicionTrasGuardado);
+window.addEventListener('registro:cancelado', cancelarEdicion);
 
 // ===============================
 // Arranque
