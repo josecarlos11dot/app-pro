@@ -27,24 +27,38 @@ let _cierrePorGuardado = false;
 // 🔗 Base del backend de REGISTROS (dejamos Render por ahora)
 const API_REGISTROS_BASE = 'https://sistema-2025-backend.onrender.com';
 
-// ---- API helpers
-async function guardarRegistroEnBackend(data, id = null) {
+/**
+ * Guarda el registro en backend con timeout (default 15s).
+ * Devuelve el JSON de la respuesta (o {} si 204/no JSON).
+ */
+async function guardarRegistroEnBackend(data, id = null, { timeoutMs = 15000 } = {}) {
   const url = id
     ? `${API_REGISTROS_BASE}/api/registros/${id}`
     : `${API_REGISTROS_BASE}/api/registros`;
   const metodo = id ? 'PUT' : 'POST';
 
-  const res = await fetch(url, {
-    method: metodo,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  });
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort('timeout'), timeoutMs);
 
-  if (!res.ok) {
-    const t = await res.text().catch(() => '');
-    throw new Error(`HTTP ${res.status} ${t}`.trim());
+  try {
+    const res = await fetch(url, {
+      method: metodo,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+      signal: ctrl.signal
+    });
+
+    if (!res.ok) {
+      const t = await res.text().catch(() => '');
+      throw new Error(`HTTP ${res.status} ${t}`.trim());
+    }
+
+    // Si el backend responde 204 (sin cuerpo), devolvemos objeto vacío
+    if (res.status === 204) return {};
+    return res.json().catch(() => ({}));
+  } finally {
+    clearTimeout(timer);
   }
-  return res.json().catch(() => ({}));
 }
 
 // ---- UI: abrir/cerrar
@@ -85,7 +99,6 @@ overlayRegistro.addEventListener('click', cerrarFormulario);
 registroForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  // Lectura/validación básica
   const nuevoRegistro = {
     placa: (inputPlaca.value || '').trim().toUpperCase(),
     marca: inputMarca.value || '',
@@ -103,25 +116,42 @@ registroForm.addEventListener('submit', async (e) => {
 
   // Evita doble submit
   const btnSubmit = registroForm.querySelector('[type="submit"], button:not([type])');
+  const restoreBtn = () => {
+    if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.textContent = 'Guardar'; }
+  };
   if (btnSubmit) { btnSubmit.disabled = true; btnSubmit.textContent = 'Guardando...'; }
 
   try {
-    await guardarRegistroEnBackend(nuevoRegistro, filaEditando);
-    await mostrarRegistrosDelServidor();  // refresca tabla principal
+    // 1) Guardar en backend (con timeout)
+    await guardarRegistroEnBackend(nuevoRegistro, filaEditando, { timeoutMs: 15000 });
 
-    // ✅ Avisar al main que el guardado fue ok (para borrar la tarjeta pendiente)
+    // 2) Refrescar tabla principal
+    await mostrarRegistrosDelServidor();
+
+    // 3) Restaurar botón ANTES de cerrar
+    restoreBtn();
+
+    // 4) Avisar al main que el guardado fue OK (para borrar la tarjeta pendiente)
     _cierrePorGuardado = true;
     try { window.onRegistroGuardado?.({ placa: nuevoRegistro.placa }); } catch {}
 
+    // 5) Cerrar modal
     cerrarFormulario();
   } catch (err) {
     console.error('Error al guardar en backend:', err);
-    alert('No se pudo guardar el registro. Revisa tu conexión e inténtalo de nuevo.');
-    _cierrePorGuardado = false; // aseguramos que el cierre posterior no cuente como guardado
-  } finally {
-    if (btnSubmit) { btnSubmit.disabled = false; btnSubmit.textContent = 'Guardar'; }
+    const esTimeout =
+      err?.name === 'AbortError' ||
+      /abort|timeout/i.test(String(err?.message || ''));
+
+    const msg = esTimeout
+      ? 'Se agotó el tiempo de espera (red lenta). Inténtalo de nuevo.'
+      : 'No se pudo guardar el registro. Revisa tu conexión e inténtalo de nuevo.';
+    alert(msg);
+
+    _cierrePorGuardado = false;
+    restoreBtn();
   }
 });
 
-// (Opcional) Si te gusta pintar opciones también al cargar el módulo, puedes dejar:
+// (Opcional) Pintar opciones al cargar el módulo
 try { configurarBotonesDinamicos(); } catch {}
