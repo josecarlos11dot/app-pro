@@ -2,11 +2,7 @@
   "rewrites": [
     { "source": "/", "destination": "/sistema/index.html" },
     { "source": "/ocr", "destination": "/ocr/index.html" },
-
     { "source": "/style.css", "destination": "/sistema/style.css" },
     { "source": "/js/(.*)", "destination": "/sistema/js/$1" }
-
-    // Si luego agregas /assets, /img, etc., añade reglas similares:
-    // { "source": "/assets/(.*)", "destination": "/sistema/assets/$1" }
   ]
 }
