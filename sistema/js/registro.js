@@ -26,6 +26,21 @@ let _cierrePorGuardado = false;
 
 // 🔗 Base del backend de REGISTROS (dejamos Render por ahora)
 const API_REGISTROS_BASE = 'https://sistema-2025-backend.onrender.com';
+// --- Precalentamiento del backend (evita primer guardado lento) ---
+let backendRegistrosListo = false;
+
+async function precalentarBackendRegistros() {
+  try {
+    const r = await fetch(`${API_REGISTROS_BASE}/api/registros?__warmup=1`, { cache: 'no-store' });
+    backendRegistrosListo = r.ok;
+  } catch {
+    backendRegistrosListo = false;
+  }
+}
+// Lanza un warmup al cargar el módulo y otro a los 8s
+precalentarBackendRegistros();
+setTimeout(precalentarBackendRegistros, 8000);
+
 
 /**
  * Guarda el registro en backend con timeout (default 15s).
@@ -85,9 +100,6 @@ export function cerrarFormulario() {
   _cierrePorGuardado = false; // reset del flag
   desactivarBotonesActivos();
 }
-// En registro.js, junto a tus exports:
-export function setEdicionRegistro(id) { filaEditando = id; }
-window.setEdicionRegistro = setEdicionRegistro; // para llamarlo desde tabla.js
 
 // Botón “+ Registro” / “✕ Cerrar”
 btnNuevo.addEventListener('click', () => {
@@ -125,8 +137,15 @@ registroForm.addEventListener('submit', async (e) => {
   if (btnSubmit) { btnSubmit.disabled = true; btnSubmit.textContent = 'Guardando...'; }
 
   try {
-    // 1) Guardar en backend (con timeout)
-    await guardarRegistroEnBackend(nuevoRegistro, filaEditando, { timeoutMs: 15000 });
+    // 1) Guardar en backend (con timeout más largo si aún está "frío")
+    await guardarRegistroEnBackend(
+      nuevoRegistro,
+      filaEditando,
+      { timeoutMs: backendRegistrosListo ? 15000 : 30000 }
+    );
+
+    // Al llegar aquí, el backend ya “despertó”
+    backendRegistrosListo = true;
 
     // 2) Refrescar tabla principal
     await mostrarRegistrosDelServidor();
@@ -155,6 +174,7 @@ registroForm.addEventListener('submit', async (e) => {
     restoreBtn();
   }
 });
+
 
 // (Opcional) Pintar opciones al cargar el módulo
 try { configurarBotonesDinamicos(); } catch {}
