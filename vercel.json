@@ -1,5 +1,7 @@
 {
   "rewrites": [
+    { "source": "/favicon.ico", "destination": "/sistema/favicon.svg" },
+    { "source": "/favicon.svg", "destination": "/sistema/favicon.svg" },
     { "source": "/", "destination": "/sistema/index.html" },
     { "source": "/ocr", "destination": "/ocr/index.html" },
     { "source": "/style.css", "destination": "/sistema/style.css" },
