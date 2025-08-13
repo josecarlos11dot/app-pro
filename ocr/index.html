@@ -8,39 +8,19 @@
     body { font-family: sans-serif; padding: 1rem; background: #111; color: #fff; text-align: center; }
     video, canvas { width: 100%; max-width: 480px; border: 2px solid #ccc; border-radius: 10px; }
     #guia {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 250px;
-      height: 80px;
-      transform: translate(-50%, -50%);
-      border: 2px dashed red;
-      box-sizing: border-box;
-      pointer-events: none;
+      position: absolute; top: 50%; left: 50%; width: 250px; height: 80px;
+      transform: translate(-50%, -50%); border: 2px dashed red; box-sizing: border-box; pointer-events: none;
     }
-    #contenedorCamara {
-      position: relative;
-      display: inline-block;
-    }
-    #estadoOCR, #estadoSend { margin: 1rem 0; font-weight: bold; } /* ✅ estadoSend */
+    #contenedorCamara { position: relative; display: inline-block; }
+    #estadoOCR, #estadoSend { margin: 1rem 0; font-weight: bold; }
     button {
-      padding: 10px 20px;
-      font-size: 1rem;
-      margin-top: 1rem;
-      border-radius: 8px;
-      border: none;
-      background-color: #00c853;
-      color: white;
-      cursor: pointer;
+      padding: 10px 20px; font-size: 1rem; margin-top: 1rem;
+      border-radius: 8px; border: none; background-color: #00c853; color: white; cursor: pointer;
     }
+    button:disabled { opacity: .6; cursor: not-allowed; }
     input[type="text"] {
-      width: 100%;
-      max-width: 320px;
-      padding: .6rem .8rem;
-      border-radius: 8px;
-      border: 1px solid #444;
-      background: #000;
-      color: #fff;
+      width: 100%; max-width: 320px; padding: .6rem .8rem;
+      border-radius: 8px; border: 1px solid #444; background: #000; color: #fff;
     }
   </style>
 </head>
@@ -53,16 +33,16 @@
     <div id="guia"></div>
   </div>
 
-  <button id="btnCapturar">📸 Capturar</button>
+  <button id="btnCapturar" disabled>📸 Capturar</button>
 
-  <p id="estadoOCR">Esperando captura...</p>
+  <p id="estadoOCR">Cargando cámara…</p>
   <input type="text" id="resultadoPlaca" placeholder="Placa detectada..." />
 
-  <!-- ✅ Botón de confirmación -->
+  <!-- Confirmar -->
   <div>
     <button id="btnConfirmar">✅ Confirmar y enviar</button>
   </div>
-  <p id="estadoSend">Esperando confirmación…</p> <!-- ✅ Mensaje de envío -->
+  <p id="estadoSend">Esperando confirmación…</p>
 
   <canvas id="canvas" style="display:none;"></canvas>
 
@@ -70,35 +50,24 @@
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
     const estadoOCR = document.getElementById('estadoOCR');
-    const estadoSend = document.getElementById('estadoSend');   // ✅
+    const estadoSend = document.getElementById('estadoSend');
     const inputPlaca = document.getElementById('resultadoPlaca');
     const btnCapturar = document.getElementById('btnCapturar');
-    const btnConfirmar = document.getElementById('btnConfirmar'); // ✅
+    const btnConfirmar = document.getElementById('btnConfirmar');
     const ctx = canvas.getContext('2d');
 
-    // ⚠️ Nota: este token está en el front. Más adelante conviene pasarlo a un backend.
+    // ⚠️ Para producción, ideal mover este token al backend.
     const API_TOKEN = '3f8ef072e79205794e226ac4c63907d1b081c500';
 
-    // (opcional) genera tarjetas locales con botón "Registrar" (no lo usamos ya)
-    function agregarPlacaPendiente(placaDetectada) { /* ... se puede dejar como estaba ... */ }
-
-    // ❌ Eliminamos la redirección automática. Ya no se usa enviarPlacaAlSistema.
-    // function enviarPlacaAlSistema(placa) { ... }
-
-    // === 1. Activar cámara ===
+    // ==== Cámara ====
     async function iniciarCamara() {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'environment' },
-          audio: false
-        });
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
         video.srcObject = stream;
-
-        // ✅ Evita capturar antes de que el video tenga dimensiones
-        btnCapturar.disabled = true;
         video.addEventListener('loadedmetadata', () => {
           if (video.videoWidth && video.videoHeight) {
             btnCapturar.disabled = false;
+            estadoOCR.textContent = 'Cámara activa. Enfoca la placa en el rectángulo y presiona Capturar.';
           }
         });
       } catch (err) {
@@ -108,8 +77,12 @@
     }
     iniciarCamara();
 
-    // === 2. Capturar imagen al hacer clic (misma lógica que te funcionaba) ===
+    // Utilidades
+    const normalizar = s => String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+    // ==== Capturar y reconocer (PlateRecognizer) ====
     btnCapturar.addEventListener('click', async () => {
+      // Dibuja frame completo (tu base original)
       canvas.width = video.videoWidth || 640;
       canvas.height = video.videoHeight || 360;
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -123,91 +96,97 @@
         formData.append('detection_detail', 'true');
         formData.append('camera_id', 'camara-viva');
         formData.append('config', JSON.stringify({
-          blur: true,
-          vehicle_detection: true,
-          multiple_plates: false,
-          country: 'mx',
-          detect_region: true
+          blur: true, vehicle_detection: true, multiple_plates: false, country: 'mx', detect_region: true
         }));
 
         try {
           const res = await fetch('https://api.platerecognizer.com/v1/plate-reader/', {
-            method: 'POST',
-            headers: {
-              Authorization: `Token ${API_TOKEN}`
-            },
-            body: formData
+            method: 'POST', headers: { Authorization: `Token ${API_TOKEN}` }, body: formData
           });
 
           const data = await res.json();
-          console.log('Respuesta completa:', data);
+          console.log('Respuesta PlateRecognizer:', data);
 
           const resultado = data.results?.[0];
 
           if (resultado) {
-            // ✅ Normalizamos y MOSTRAMOS, pero YA NO REDIRIGIMOS
-            const placa = (resultado.plate || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+            const placa = normalizar(resultado.plate);
+            const score = Number(resultado.score || 0);
             inputPlaca.value = placa;
 
-            const score = Number(resultado.score || 0);
             if (score < 0.85) {
               estadoOCR.textContent = `Duda en lectura ⚠️ (${placa}). Corrige y CONFIRMA.`;
             } else {
               estadoOCR.textContent = `Placa detectada ✅ (${placa}). Revisa y CONFIRMA.`;
             }
-
           } else {
             estadoOCR.textContent = 'No se detectó placa ❌';
             inputPlaca.value = '';
           }
 
         } catch (err) {
-          console.error('Error al enviar a Plate Recognizer:', err);
+          console.error('Error con PlateRecognizer:', err);
           estadoOCR.textContent = 'Error al procesar imagen ❌';
         }
-
       }, 'image/jpeg', 0.9);
     });
 
-    // ✅ 3. Confirmar y enviar a tu backend (Vercel /api/pendientes) — SIN redirigir
+    // ==== Confirmar y enviar a /api/pendientes (con anti-duplicados) ====
     let enviando = false;
+    let _ultima = { placa:'', t:0 };
+
+    async function existePendiente(placa) {
+      try {
+        const r = await fetch('/api/pendientes', { cache: 'no-store' });
+        const data = await r.json();
+        if (!r.ok) return false;
+        const lista = Array.isArray(data.data) ? data.data : [];
+        return lista.some(x => String(x.placa || '').toUpperCase() === placa);
+      } catch { return false; }
+    }
+
     btnConfirmar.addEventListener('click', async () => {
-      const placa = (inputPlaca.value || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+      const placa = normalizar(inputPlaca.value);
       if (!placa || placa.length < 5) {
-        estadoSend.textContent = 'Placa inválida. Corrige antes de enviar.';
-        return;
+        estadoSend.textContent = 'Placa inválida. Corrige antes de enviar.'; return;
       }
+      // Debounce: evita el doble envío de la misma placa en 5s
+      const ahora = Date.now();
+      if (_ultima.placa === placa && (ahora - _ultima.t) < 5000) {
+        estadoSend.textContent = `Ya enviaste ${placa} hace poco.`; return;
+      }
+      // Chequeo contra la cola actual
+      if (await existePendiente(placa)) {
+        estadoSend.textContent = `Omitido: ${placa} ya está en pendientes.`; inputPlaca.value = ''; return;
+      }
+
       if (enviando) return;
-      enviando = true;
-      btnConfirmar.disabled = true;
+      enviando = true; btnConfirmar.disabled = true;
 
       try {
         estadoSend.textContent = 'Enviando…';
-
         const r = await fetch('/api/pendientes', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ placa })
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ placa })
         });
         const data = await r.json();
         if (!r.ok) throw new Error(data?.msg || 'Error al enviar');
 
         try { localStorage.setItem('placaDetectadaOCR', placa); } catch {}
+        _ultima = { placa, t: ahora };
+        inputPlaca.value = ''; // limpia para evitar reenvío accidental
         estadoSend.textContent = `Enviado ✓ (${placa}). Permanece en OCR.`;
       } catch (e) {
         console.error(e);
         estadoSend.textContent = 'No se pudo enviar la placa: ' + e.message;
       } finally {
-        enviando = false;
-        btnConfirmar.disabled = false;
+        enviando = false; btnConfirmar.disabled = false;
       }
     });
 
-    // ✅ Input en mayúsculas sin caracteres raros
-    inputPlaca.addEventListener('input', (e)=> {
-      e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    // UX: mayúsculas sin caracteres raros
+    inputPlaca.addEventListener('input', e => {
+      e.target.value = normalizar(e.target.value);
     });
   </script>
-
 </body>
 </html>
