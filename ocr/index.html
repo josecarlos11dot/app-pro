@@ -7,28 +7,41 @@
   <style>
     body { font-family: sans-serif; padding: 1rem; background: #111; color: #fff; text-align: center; }
     video, canvas { width: 100%; max-width: 480px; border: 2px solid #ccc; border-radius: 10px; }
-    #contenedorCamara { position: relative; display: inline-block; }
     #guia {
       position: absolute;
-      top: 50%; left: 50%;
-      width: 250px; height: 80px;
+      top: 50%;
+      left: 50%;
+      width: 250px;
+      height: 80px;
       transform: translate(-50%, -50%);
-      border: 2px dashed red; box-sizing: border-box;
+      border: 2px dashed red;
+      box-sizing: border-box;
       pointer-events: none;
     }
-    #estadoOCR, #estadoSend { margin: 1rem 0; font-weight: bold; }
+    #contenedorCamara {
+      position: relative;
+      display: inline-block;
+    }
+    #estadoOCR, #estadoSend { margin: 1rem 0; font-weight: bold; } /* ✅ estadoSend */
     button {
-      padding: 10px 20px; font-size: 1rem; margin-top: .8rem;
-      border-radius: 8px; border: none; background-color: #00c853; color: white; cursor: pointer;
+      padding: 10px 20px;
+      font-size: 1rem;
+      margin-top: 1rem;
+      border-radius: 8px;
+      border: none;
+      background-color: #00c853;
+      color: white;
+      cursor: pointer;
     }
-    button.secondary { background:#444; }
-    button:disabled { opacity:.6; cursor:not-allowed; }
     input[type="text"] {
-      width: 100%; max-width: 320px; padding: .6rem .8rem;
-      border-radius: 8px; border: 1px solid #444; background: #000; color: #fff;
+      width: 100%;
+      max-width: 320px;
+      padding: .6rem .8rem;
+      border-radius: 8px;
+      border: 1px solid #444;
+      background: #000;
+      color: #fff;
     }
-    .fila { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
-    .ok{color:#10b981} .warn{color:#f59e0b} .err{color:#ef4444}
   </style>
 </head>
 <body>
@@ -40,113 +53,70 @@
     <div id="guia"></div>
   </div>
 
-  <div class="fila">
-    <button id="btnCapturar" disabled>📸 Capturar</button>
-    <button id="btnReintentar" class="secondary">Reintentar</button>
+  <button id="btnCapturar">📸 Capturar</button>
+
+  <p id="estadoOCR">Esperando captura...</p>
+  <input type="text" id="resultadoPlaca" placeholder="Placa detectada..." />
+
+  <!-- ✅ Botón de confirmación -->
+  <div>
+    <button id="btnConfirmar">✅ Confirmar y enviar</button>
   </div>
+  <p id="estadoSend">Esperando confirmación…</p> <!-- ✅ Mensaje de envío -->
 
-  <p id="estadoOCR">Cargando cámara…</p>
-
-  <div class="fila" style="margin-top:.5rem">
-    <input type="text" id="resultadoPlaca" placeholder="Placa detectada (puedes corregirla)..." />
-  </div>
-
-  <div class="fila">
-    <button id="btnConfirmar">✅ Confirmar </button>
-  </div>
-
-  <p id="estadoSend">Esperando confirmación…</p>
-
-  <!-- canvases ocultos -->
-  <canvas id="canvasFull" style="display:none;"></canvas>
-  <canvas id="canvasROI" style="display:none;"></canvas>
+  <canvas id="canvas" style="display:none;"></canvas>
 
   <script>
     const video = document.getElementById('video');
-    const canvasFull = document.getElementById('canvasFull');
-    const canvasROI = document.getElementById('canvasROI');
+    const canvas = document.getElementById('canvas');
     const estadoOCR = document.getElementById('estadoOCR');
-    const estadoSend = document.getElementById('estadoSend');
+    const estadoSend = document.getElementById('estadoSend');   // ✅
     const inputPlaca = document.getElementById('resultadoPlaca');
     const btnCapturar = document.getElementById('btnCapturar');
-    const btnReintentar = document.getElementById('btnReintentar');
-    const btnConfirmar = document.getElementById('btnConfirmar');
-    const guia = document.getElementById('guia');
+    const btnConfirmar = document.getElementById('btnConfirmar'); // ✅
+    const ctx = canvas.getContext('2d');
 
-    // ⚠️ Reemplaza por tu token (ideal moverlo a backend después)
-    const API_TOKEN = 'TU_TOKEN_PLATERECOGNIZER';
+    // ⚠️ Nota: este token está en el front. Más adelante conviene pasarlo a un backend.
+    const API_TOKEN = '3f8ef072e79205794e226ac4c63907d1b081c500';
 
-    // === 1) Cámara ===
+    // (opcional) genera tarjetas locales con botón "Registrar" (no lo usamos ya)
+    function agregarPlacaPendiente(placaDetectada) { /* ... se puede dejar como estaba ... */ }
+
+    // ❌ Eliminamos la redirección automática. Ya no se usa enviarPlacaAlSistema.
+    // function enviarPlacaAlSistema(placa) { ... }
+
+    // === 1. Activar cámara ===
     async function iniciarCamara() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'environment' }, audio: false
+          video: { facingMode: 'environment' },
+          audio: false
         });
         video.srcObject = stream;
+
+        // ✅ Evita capturar antes de que el video tenga dimensiones
+        btnCapturar.disabled = true;
         video.addEventListener('loadedmetadata', () => {
           if (video.videoWidth && video.videoHeight) {
             btnCapturar.disabled = false;
-            estadoOCR.textContent = 'Cámara activa. Enfoca la placa dentro del recuadro y presiona Capturar.';
           }
         });
       } catch (err) {
         console.error('No se pudo acceder a la cámara:', err);
-        estadoOCR.innerHTML = 'Error al acceder a la cámara ❌';
+        estadoOCR.textContent = 'Error al acceder a la cámara ❌';
       }
     }
     iniciarCamara();
 
-    // Normaliza texto a formato de placa razonable
-    function normalizarPlaca(s) {
-      return String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
-    }
+    // === 2. Capturar imagen al hacer clic (misma lógica que te funcionaba) ===
+    btnCapturar.addEventListener('click', async () => {
+      canvas.width = video.videoWidth || 640;
+      canvas.height = video.videoHeight || 360;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // === 2) Capturar solo el ROI (marco guía) ===
-    function capturarROI() {
-      const vw = video.videoWidth, vh = video.videoHeight;
-      if (!vw || !vh) return null;
+      estadoOCR.textContent = 'Procesando imagen...';
 
-      // Pinta el frame completo a tamaño real
-      canvasFull.width = vw; canvasFull.height = vh;
-      const ctxFull = canvasFull.getContext('2d', { willReadFrequently: true });
-      ctxFull.drawImage(video, 0, 0, vw, vh);
-
-      // Mapea el rectángulo guía (CSS px) a coordenadas del frame (px reales)
-      const vRect = video.getBoundingClientRect();
-      const gRect = guia.getBoundingClientRect();
-
-      const fx = (gRect.left - vRect.left) / vRect.width;
-      const fy = (gRect.top - vRect.top) / vRect.height;
-      const fw = gRect.width / vRect.width;
-      const fh = gRect.height / vRect.height;
-
-      // ROI en coordenadas del frame real
-      const sx = Math.max(0, Math.floor(fx * vw));
-      const sy = Math.max(0, Math.floor(fy * vh));
-      const sw = Math.max(1, Math.floor(fw * vw));
-      const sh = Math.max(1, Math.floor(fh * vh));
-
-      // Dibuja ROI a un canvas del tamaño del ROI
-      canvasROI.width = sw; canvasROI.height = sh;
-      const ctxROI = canvasROI.getContext('2d', { willReadFrequently: true });
-      ctxROI.drawImage(canvasFull, sx, sy, sw, sh, 0, 0, sw, sh);
-
-      return canvasROI;
-    }
-
-    // === 3) Enviar ROI a PlateRecognizer (sin redirigir) ===
-    async function reconocerPlaca() {
-      try {
-        const roiCanvas = capturarROI();
-        if (!roiCanvas) {
-          estadoOCR.className = 'err';
-          estadoOCR.textContent = 'No se pudo capturar. Intenta de nuevo.';
-          return;
-        }
-        estadoOCR.className = '';
-        estadoOCR.textContent = 'Procesando imagen…';
-
-        const blob = await new Promise(res => roiCanvas.toBlob(res, 'image/jpeg', 0.95));
+      canvas.toBlob(async (blob) => {
         const formData = new FormData();
         formData.append('upload', blob, 'captura.jpg');
         formData.append('regions', 'mx');
@@ -160,47 +130,50 @@
           detect_region: true
         }));
 
-        const res = await fetch('https://api.platerecognizer.com/v1/plate-reader/', {
-          method: 'POST',
-          headers: { Authorization: `Token ${API_TOKEN}` },
-          body: formData
-        });
+        try {
+          const res = await fetch('https://api.platerecognizer.com/v1/plate-reader/', {
+            method: 'POST',
+            headers: {
+              Authorization: `Token ${API_TOKEN}`
+            },
+            body: formData
+          });
 
-        const data = await res.json();
-        console.log('Respuesta PlateRecognizer:', data);
+          const data = await res.json();
+          console.log('Respuesta completa:', data);
 
-        const resultado = data.results?.[0];
-        if (!resultado) {
-          estadoOCR.className = 'err';
-          estadoOCR.textContent = 'No se detectó placa ❌';
-          inputPlaca.value = '';
-          return;
+          const resultado = data.results?.[0];
+
+          if (resultado) {
+            // ✅ Normalizamos y MOSTRAMOS, pero YA NO REDIRIGIMOS
+            const placa = (resultado.plate || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+            inputPlaca.value = placa;
+
+            const score = Number(resultado.score || 0);
+            if (score < 0.85) {
+              estadoOCR.textContent = `Duda en lectura ⚠️ (${placa}). Corrige y CONFIRMA.`;
+            } else {
+              estadoOCR.textContent = `Placa detectada ✅ (${placa}). Revisa y CONFIRMA.`;
+            }
+
+          } else {
+            estadoOCR.textContent = 'No se detectó placa ❌';
+            inputPlaca.value = '';
+          }
+
+        } catch (err) {
+          console.error('Error al enviar a Plate Recognizer:', err);
+          estadoOCR.textContent = 'Error al procesar imagen ❌';
         }
 
-        const placa = normalizarPlaca(resultado.plate);
-        const score = Number(resultado.score || 0);
-        inputPlaca.value = placa;
+      }, 'image/jpeg', 0.9);
+    });
 
-        if (score >= 0.85) {
-          estadoOCR.className = 'ok';
-          estadoOCR.textContent = `Placa detectada ✓ (${placa}) — revisa y confirma.`;
-        } else {
-          estadoOCR.className = 'warn';
-          estadoOCR.textContent = `Duda en lectura ⚠️ (${placa}). Corrige y confirma.`;
-        }
-      } catch (err) {
-        console.error('Error con PlateRecognizer:', err);
-        estadoOCR.className = 'err';
-        estadoOCR.textContent = 'Error al procesar imagen ❌';
-      }
-    }
-
-    // === 4) Confirmar y enviar a /api/pendientes (misma página, sin redirigir) ===
+    // ✅ 3. Confirmar y enviar a tu backend (Vercel /api/pendientes) — SIN redirigir
     let enviando = false;
-    async function confirmarYEnviar() {
-      const placa = normalizarPlaca(inputPlaca.value);
+    btnConfirmar.addEventListener('click', async () => {
+      const placa = (inputPlaca.value || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
       if (!placa || placa.length < 5) {
-        estadoSend.className = 'err';
         estadoSend.textContent = 'Placa inválida. Corrige antes de enviar.';
         return;
       }
@@ -209,7 +182,6 @@
       btnConfirmar.disabled = true;
 
       try {
-        estadoSend.className = '';
         estadoSend.textContent = 'Enviando…';
 
         const r = await fetch('/api/pendientes', {
@@ -221,31 +193,21 @@
         if (!r.ok) throw new Error(data?.msg || 'Error al enviar');
 
         try { localStorage.setItem('placaDetectadaOCR', placa); } catch {}
-        estadoSend.className = 'ok';
-        estadoSend.textContent = `Enviado ✓ (${placa}). Permaneces en OCR.`;
-        // ⛔️ Sin redirección, por tu flujo de escáner
+        estadoSend.textContent = `Enviado ✓ (${placa}). Permanece en OCR.`;
       } catch (e) {
         console.error(e);
-        estadoSend.className = 'err';
         estadoSend.textContent = 'No se pudo enviar la placa: ' + e.message;
       } finally {
         enviando = false;
         btnConfirmar.disabled = false;
       }
-    }
-
-    // === 5) Eventos UI ===
-    btnCapturar.addEventListener('click', reconocerPlaca);
-    btnReintentar.addEventListener('click', () => {
-      estadoOCR.className=''; estadoSend.className='';
-      estadoOCR.textContent = 'Enfoca y vuelve a Capturar.';
-      estadoSend.textContent = 'Esperando confirmación…';
-      inputPlaca.value = '';
     });
-    btnConfirmar.addEventListener('click', confirmarYEnviar);
 
-    // UX: autoupper y sin caracteres raros
-    inputPlaca.addEventListener('input', (e)=> e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,''));
+    // ✅ Input en mayúsculas sin caracteres raros
+    inputPlaca.addEventListener('input', (e)=> {
+      e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+    });
   </script>
+
 </body>
 </html>
