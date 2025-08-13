@@ -112,16 +112,16 @@ async function obtenerPendientesDelServidor() {
 
 async function consumirPendienteEnBackend(id) {
   try {
-    const res = await fetch(`${API_BASE}/api/pendientes/${encodeURIComponent(id)}`, {
-      method: 'DELETE'
-    });
+    const url = `/api/pendientes?id=${encodeURIComponent(id)}`; // <- query ?id=...
+    const res = await fetch(url, { method: 'DELETE' });
     const json = await res.json().catch(() => ({}));
-    return !!json.ok;
+    return res.ok && (json.ok !== false); // valida HTTP + payload
   } catch (e) {
     console.warn('Fallo al consumir pendiente:', e);
     return false;
   }
 }
+
 
 // ===============================
 // UI: tarjeta pendiente
