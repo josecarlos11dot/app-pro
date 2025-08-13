@@ -4,7 +4,7 @@
 
 // 🌐 Config: cambia aquí según el entorno
 // Puedes definir window.API_BASE_OVERRIDE en un <script> antes de cargar este archivo
-const API_BASE =
+const API_BASE = ''; // relativo en prod
   window.API_BASE_OVERRIDE ||
   'http://localhost:3000'; // desarrollo local
 
