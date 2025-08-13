@@ -8,7 +8,7 @@ export async function obtenerPendientes() {
 }
 
 export async function consumirPendiente(id) {
-  const res = await fetch(`${API_BASE}/api/pendientes/${id}`, { method: 'DELETE' });
+  const res = await fetch(`${API_BASE}/api/pendientes?id=${id}`, { method: 'DELETE' });
   const json = await res.json();
   return json.ok;
 }

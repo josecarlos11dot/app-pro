@@ -1,6 +1,11 @@
-let cola = []; // Memoria volátil (puede reiniciarse en serverless)
+function store() {
+  // Compartir memoria dentro de la misma lambda
+  if (!globalThis.__COLA__) globalThis.__COLA__ = [];
+  return globalThis.__COLA__;
+}
 
-export default function handler(req, res) {
+export default async function handler(req, res) {
+  const cola = store();
   const { method } = req;
 
   if (method === 'GET') {
@@ -8,19 +13,33 @@ export default function handler(req, res) {
   }
 
   if (method === 'POST') {
-    const { placa } = req.body || {};
-    if (!placa) return res.status(400).json({ ok: false, msg: 'Falta placa' });
-    const item = { id: Date.now(), placa, status: 'pendiente' };
-    cola.push(item);
-    return res.status(201).json({ ok: true, item });
+    try {
+      const { placa } = req.body || {};
+      const p = String(placa || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+      if (!p) return res.status(400).json({ ok:false, msg:'Falta placa' });
+
+      const dup = cola.find(x => x.placa === p);
+      if (dup) return res.status(200).json({ ok:true, duplicated:true, item: dup });
+
+      const item = { id: Date.now(), placa: p, status: 'pendiente', ts: Date.now() };
+      cola.push(item);
+      return res.status(201).json({ ok:true, item });
+    } catch (e) {
+      return res.status(500).json({ ok:false, msg:e.message });
+    }
   }
 
   if (method === 'DELETE') {
-    const { id } = req.query || {};
-    cola = cola.filter(x => String(x.id) !== String(id));
-    return res.status(200).json({ ok: true });
+    const idStr = (req.query?.id ?? req.body?.id ?? '').toString();
+    const id = Number(idStr);
+    if (!id) return res.status(400).json({ ok:false, msg:'Falta id' });
+
+    const idx = cola.findIndex(x => x.id === id);
+    if (idx === -1) return res.status(404).json({ ok:false, msg:'No existe' });
+
+    const [removed] = cola.splice(idx, 1);
+    return res.status(200).json({ ok:true, removed });
   }
 
-  res.setHeader('Allow', ['GET', 'POST', 'DELETE']);
-  return res.status(405).json({ ok: false, msg: 'Método no permitido' });
+  return res.status(405).json({ ok:false, msg:'Método no permitido' });
 }
