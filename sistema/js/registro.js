@@ -85,6 +85,9 @@ export function cerrarFormulario() {
   _cierrePorGuardado = false; // reset del flag
   desactivarBotonesActivos();
 }
+// En registro.js, junto a tus exports:
+export function setEdicionRegistro(id) { filaEditando = id; }
+window.setEdicionRegistro = setEdicionRegistro; // para llamarlo desde tabla.js
 
 // Botón “+ Registro” / “✕ Cerrar”
 btnNuevo.addEventListener('click', () => {
