@@ -9,8 +9,9 @@ const API_BASE =
     ? window.API_BASE_OVERRIDE
     : ''; // relativo en prod
 
-// 📥 Importar función oficial desde registro.js
+// 📥 Importar funciones
 import { abrirFormulario } from './registro.js';
+import { mostrarRegistrosDelServidor } from './tabla.js';   // ⬅️ IMPORTANTE
 
 // ===============================
 // Estado: pendiente en edición
@@ -237,10 +238,15 @@ window.addEventListener('registro:cancelado', cancelarEdicion);
 // Arranque
 // ===============================
 document.addEventListener('DOMContentLoaded', () => {
+  // Si además quieres recalcular opciones dinámicas o cargar estado local, puedes mantener estas líneas:
   if (typeof configurarBotonesDinamicos === 'function') configurarBotonesDinamicos?.();
   if (typeof cargarTodoDesdeStorage === 'function') cargarTodoDesdeStorage?.();
-  if (typeof mostrarRegistrosDelServidor === 'function') mostrarRegistrosDelServidor?.();
 
+  // 🔹 Cargar la tabla al inicio (clave para que no se “vacíe” tras F5)
+  mostrarRegistrosDelServidor();
+
+  // 🔹 Polling opcional para refrescar la tabla cada cierto tiempo
+  // setInterval(mostrarRegistrosDelServidor, 30000); // cada 30s, si lo quieres
   obtenerPendientesDelServidor();
-  setInterval(obtenerPendientesDelServidor, 4000); // polling cada 4s
+  setInterval(obtenerPendientesDelServidor, 4000); // polling de pendientes cada 4s
 });
