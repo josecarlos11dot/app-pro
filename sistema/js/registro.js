@@ -24,6 +24,15 @@ let filaEditando = null;
 // Flag para saber si el cierre del formulario es por guardado exitoso
 let _cierrePorGuardado = false;
 
+
+// ✅ Agrega estas dos líneas AQUÍ
+export function setEdicionRegistro(id) { filaEditando = id; }
+if (typeof window !== 'undefined') window.setEdicionRegistro = setEdicionRegistro;
+
+
+
+
+
 // 🔗 Base del backend de REGISTROS (dejamos Render por ahora)
 const API_REGISTROS_BASE = 'https://sistema-2025-backend.onrender.com';
 // --- Precalentamiento del backend (evita primer guardado lento) ---

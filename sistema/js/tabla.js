@@ -96,22 +96,27 @@ function bindRowActions() {
     if (btn.classList.contains('btn-editar')) {
       const r = _datos.find(x => x._id === id);
       if (!r) return;
-
-      // Prefill del formulario
-      if (inputPlaca)   inputPlaca.value   = (r.placa  || '').toUpperCase();
-      if (inputMarca)   inputMarca.value   = r.marca   || '';
-      if (inputModelo)  inputModelo.value  = r.modelo  || '';
-      if (inputColor)   inputColor.value   = r.color   || '';
-      if (inputPrecio)  inputPrecio.value  = r.precio  || '';
-      if (inputLavador) inputLavador.value = r.lavador || '';
-
-      // Marca edición (si existe en registro.js hará PUT; si no, no rompe)
+    
+      // 1) Marca edición ANTES de abrir (para que el submit haga PUT)
       window.setEdicionRegistro?.(id);
-
-      // Abre el modal
+    
+      // 2) Abre el modal
       abrirFormulario();
+    
+      // 3) Rellena los campos DESPUÉS de abrir (evita que la UI los borre)
+      //    usamos requestAnimationFrame para esperar a que el modal pinte
+      requestAnimationFrame(() => {
+        if (inputPlaca)   { inputPlaca.value   = (r.placa  || '').toUpperCase(); inputPlaca.dispatchEvent(new Event('input', {bubbles:true})); }
+        if (inputMarca)   { inputMarca.value   = r.marca   || '';                 inputMarca.dispatchEvent(new Event('change', {bubbles:true})); }
+        if (inputModelo)  { inputModelo.value  = r.modelo  || '';                 inputModelo.dispatchEvent(new Event('change', {bubbles:true})); }
+        if (inputColor)   { inputColor.value   = r.color   || '';                 inputColor.dispatchEvent(new Event('change', {bubbles:true})); }
+        if (inputPrecio)  { inputPrecio.value  = r.precio  || '';                 inputPrecio.dispatchEvent(new Event('input', {bubbles:true})); }
+        if (inputLavador) { inputLavador.value = r.lavador || '';                 inputLavador.dispatchEvent(new Event('change', {bubbles:true})); }
+      });
+    
       return;
     }
+    
   });
 }
 
