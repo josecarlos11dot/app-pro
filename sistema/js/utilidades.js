@@ -33,3 +33,15 @@ export function activarBoton(contenedor, valor) {
 export function desactivarBotonesActivos() {
   document.querySelectorAll('.btn.activo').forEach(b => b.classList.remove('activo'));
 }
+
+// ✅ Acepta dataURL (canvas/OCR) y http/https
+export function urlImagenSegura(url) {
+  if (!url || typeof url !== 'string') return '';
+  if (url.startsWith('data:image/')) return url; // base64 del canvas
+  try {
+    const u = new URL(url);
+    return (u.protocol === 'http:' || u.protocol === 'https:') ? url : '';
+  } catch {
+    return '';
+  }
+}

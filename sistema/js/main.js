@@ -1,110 +1,104 @@
 // ===============================
-// main.js – Fila en espera (pendientes) + registrar
+// main.js – Pendientes + miniatura con zoom
 // ===============================
 
-// 🌐 Config: cambia aquí según el entorno
-// Puedes definir window.API_BASE_OVERRIDE en un <script> antes de cargar este archivo
+// 🌐 Base de API (relativa en prod). Puedes sobreescribir con window.API_BASE_OVERRIDE
 const API_BASE =
   (typeof window !== 'undefined' && window.API_BASE_OVERRIDE)
     ? window.API_BASE_OVERRIDE
-    : ''; // relativo en prod
+    : '';
 
-// 📥 Importar funciones
+// 📥 Importar funciones ya existentes en tu proyecto
 import { abrirFormulario } from './registro.js';
-import { mostrarRegistrosDelServidor } from './tabla.js';   // ⬅️ IMPORTANTE
+import { mostrarRegistrosDelServidor } from './tabla.js';
+import { urlImagenSegura } from './utilidades.js';
+
+// ========== Modal de imagen (lightbox) ==========
+function ensureImageModal() {
+  let modal = document.getElementById('imgModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'imgModal';
+    modal.style.cssText = `
+      position:fixed; inset:0; display:none;
+      align-items:center; justify-content:center;
+      background:rgba(0,0,0,.75); z-index:9999; padding:16px;
+    `;
+    modal.innerHTML = `
+      <div style="max-width:90vw; max-height:90vh;">
+        <img id="imgModalImg" alt=""
+             style="display:block; margin:auto; max-width:100%; max-height:90vh; border-radius:12px;">
+      </div>
+    `;
+    modal.addEventListener('click', () => { modal.style.display = 'none'; });
+    document.body.appendChild(modal);
+    document.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Escape') modal.style.display = 'none';
+    });
+  }
+  return modal;
+}
+function openImageModal(src, alt = '') {
+  const modal = ensureImageModal();
+  const img = modal.querySelector('#imgModalImg');
+  img.src = src;
+  img.alt = alt || '';
+  modal.style.display = 'flex';
+}
 
 // ===============================
-// Estado: pendiente en edición
+// Estado
 // ===============================
 let pendienteEnEdicion = null; // { id, card, placa }
 
-// 🔧 Helpers
+// ===============================
+// Helpers
+// ===============================
 const horaCorta = () =>
   new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+// Contenedor para las tarjetas de pendientes (si no existe lo crea debajo del título)
 function ensureContenedorPendientes() {
   let cont = document.getElementById('pendientesRegistro');
   if (!cont) {
     cont = document.createElement('div');
     cont.id = 'pendientesRegistro';
+    cont.style.display = 'grid';
+    cont.style.gap = '10px';
+    cont.style.margin = '10px 0 16px';
+    cont.style.padding = '12px';
+    cont.style.background = '#f8fafc';
+    cont.style.borderRadius = '12px';
+
     const titulo = Array.from(document.querySelectorAll('*'))
-      .find(n => /pendientes por registrar/i.test(n.textContent || ''));
+      .find(n => /Pendientes por registrar/i.test(n.textContent || ''));
     (titulo || document.body).insertAdjacentElement('afterend', cont);
   }
   return cont;
 }
 
-function urlImagenSegura(url) {
-  if (!url || typeof url !== 'string') return '';
-  try {
-    const u = new URL(url);
-    if (u.hostname.includes('via.placeholder.com')) {
-      return 'https://placehold.co/320x200';
-    }
-    return url;
-  } catch {
-    return 'https://placehold.co/320x200';
-  }
-}
-
-// 🔧 Referencias al DOM (ajusta selectores a tu HTML si hace falta)
+// ===============================
+// Referencias DOM
+// ===============================
 const contenedorPendientes = ensureContenedorPendientes();
 const inputPlaca =
   document.getElementById('inputPlaca') ||
   document.querySelector('input[name="placa"]') ||
-  document.querySelector('input#placa');
-
-const overlayRegistro =
-  document.getElementById('overlayRegistro') ||
-  document.querySelector('#overlay, .overlay');
-
-const formulario =
-  document.getElementById('formRegistro') ||
-  document.querySelector('#formulario, form');
-
-function clickBotonRegistroReal() {
-  let btn =
-    document.getElementById('btnAbrirRegistro') ||
-    document.querySelector('[data-action="abrir-registro"]') ||
-    Array.from(document.querySelectorAll('button, a')).find(el =>
-      (el.textContent || '').trim().toLowerCase().includes('+ registro')
-    );
-  if (btn) {
-    btn.click();
-    return true;
-  }
-  return false;
-}
-
-function abrirPopupRegistro() {
-  // ✅ Usar la función importada
-  if (typeof abrirFormulario === 'function') {
-    abrirFormulario();
-    return;
-  }
-  // Si no, simular el click del botón real
-  if (clickBotonRegistroReal()) return;
-
-  // Fallback: mostrar overlay/form
-  if (overlayRegistro) overlayRegistro.style.display = 'block';
-  if (formulario) formulario.style.display = 'block';
-}
+  document.querySelector('#placa');
 
 // ===============================
-// Backend: obtener y consumir pendientes
+// Backend helpers
 // ===============================
 async function obtenerPendientesDelServidor() {
   try {
-    const res = await fetch(`${API_BASE}/api/pendientes`, { cache: 'no-store' });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const res = await fetch(`${API_BASE}/api/pendientes`);
+    const json = await res.json();
+    const lista = Array.isArray(json.data) ? json.data : [];
 
-    const json = await res.json().catch(() => ({}));
-    const lista = json.ok && Array.isArray(json.data) ? json.data : [];
-
+    // Render
     contenedorPendientes.innerHTML = '';
     if (!lista.length) {
-      contenedorPendientes.innerHTML =
-        `<div class="pendiente-vacio">Sin pendientes por ahora</div>`;
+      contenedorPendientes.innerHTML = `<div style="color:#64748b;">Sin pendientes por ahora</div>`;
       return;
     }
     lista.forEach(p => agregarPlacaPendiente(p));
@@ -112,20 +106,19 @@ async function obtenerPendientesDelServidor() {
     console.warn('⚠️ No se pudieron obtener pendientes:', err.message);
     if (!contenedorPendientes.innerHTML.trim()) {
       contenedorPendientes.innerHTML =
-        `<div class="pendiente-error">No se pudo conectar con el servidor</div>`;
+        `<div style="color:#ef4444;">No se pudo conectar con el servidor</div>`;
     }
   }
 }
 
 async function consumirPendienteEnBackend(id) {
   try {
-    const url = `/api/pendientes?id=${encodeURIComponent(id)}`; // <- query ?id=...
+    const url = `${API_BASE}/api/pendientes?id=${encodeURIComponent(id)}`;
     const res = await fetch(url, { method: 'DELETE' });
-    const json = await res.json().catch(() => ({}));
-    return res.ok && (json.ok !== false); // valida HTTP + payload
+    const json = await res.json();
+    if (!json.ok) throw new Error(json.msg || 'No se pudo consumir pendiente');
   } catch (e) {
-    console.warn('Fallo al consumir pendiente:', e);
-    return false;
+    console.warn('No se pudo consumir el pendiente en backend:', e.message);
   }
 }
 
@@ -136,7 +129,7 @@ function agregarPlacaPendiente(data) {
   const payload =
     typeof data === 'string'
       ? { id: Date.now(), placa: data, imagen: '', hora: horaCorta() }
-      : data || {};
+      : (data || {});
 
   const { id, placa = '', hora = horaCorta() } = payload;
   const imagen = urlImagenSegura(payload.imagen);
@@ -164,19 +157,33 @@ function agregarPlacaPendiente(data) {
       </button>
     </div>
     <div class="pendiente-der">
-      ${ imagen ? `<img src="${imagen}" alt="Placa ${String(placa).toUpperCase()}" style="max-height:70px;border-radius:8px;">` : '' }
+      ${ imagen ? `<img src="${imagen}" alt="Placa ${String(placa).toUpperCase()}" loading="lazy" style="max-height:70px;border-radius:8px;">` : '' }
     </div>
   `;
 
-  const btn = tarjeta.querySelector('.btn-registrar');
+  // Zoom al hacer clic en miniatura
+  const thumb = tarjeta.querySelector('.pendiente-der img');
+  if (thumb) {
+    thumb.style.cursor = 'zoom-in';
+    thumb.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openImageModal(thumb.src, `Placa ${String(placa).toUpperCase()}`);
+    });
+  }
 
+  const btn = tarjeta.querySelector('.btn-registrar');
   btn.addEventListener('click', () => {
-    // ⚠️ NO BORRAR aquí. Solo marcar que está en edición y abrir el modal.
     pendienteEnEdicion = { id, card: tarjeta, placa: String(placa).toUpperCase() };
 
+    // sincroniza con el input del formulario, si existe
     if (inputPlaca) {
       inputPlaca.value = pendienteEnEdicion.placa;
       inputPlaca.dispatchEvent(new Event('change'));
+    }
+
+    // comunica a registro.js el id (si expusiste setEdicionRegistro)
+    if (typeof window !== 'undefined' && typeof window.setEdicionRegistro === 'function') {
+      window.setEdicionRegistro(id);
     }
 
     // feedback visual
@@ -190,63 +197,61 @@ function agregarPlacaPendiente(data) {
 }
 
 // ===============================
-// Hooks para completar/cancelar edición
+// Hooks para completar/cancelar edición (para que registro.js los llame)
 // ===============================
-
-// Llamar cuando el guardado fue exitoso (desde registro.js)
-async function finalizarEdicionTrasGuardado() {
+export async function finalizarEdicionTrasGuardado() {
   if (!pendienteEnEdicion) return;
-  const { id, card } = pendienteEnEdicion;
 
-  if (id != null) {
-    const okDel = await consumirPendienteEnBackend(id); // borra en backend
-    if (okDel) {
-      try { card.remove(); } catch {}
-    } else {
-      // Si falló el delete, reactivamos botón para intentar de nuevo luego
-      const b = card.querySelector('.btn-registrar');
-      if (b) { b.disabled = false; b.textContent = 'Registrar'; }
-      console.warn('No se pudo eliminar el pendiente después de guardar');
-      pendienteEnEdicion = null;
-      return;
-    }
+  const { id, card } = pendienteEnEdicion;
+  try {
+    // Quita la tarjeta del DOM
+    card?.remove();
+    // Consume en backend
+    await consumirPendienteEnBackend(id);
+    // Refresca la tabla de registros ya guardados
+    await mostrarRegistrosDelServidor();
+  } finally {
+    pendienteEnEdicion = null;
+  }
+}
+export function cancelarEdicion() {
+  if (!pendienteEnEdicion) return;
+  const { card } = pendienteEnEdicion;
+  // Rehabilita el botón “Registrar”
+  const btn = card?.querySelector('.btn-registrar');
+  if (btn) {
+    btn.disabled = false;
+    btn.textContent = 'Registrar';
   }
   pendienteEnEdicion = null;
 }
 
-// Llamar si el modal se cerró/canceló sin guardar
-function cancelarEdicion() {
-  if (!pendienteEnEdicion) return;
-  const { card } = pendienteEnEdicion;
-  const b = card.querySelector('.btn-registrar');
-  if (b) { b.disabled = false; b.textContent = 'Registrar'; }
-  pendienteEnEdicion = null;
+// expón los hooks por si registro.js los necesita invocar
+if (typeof window !== 'undefined') {
+  window.finalizarEdicionTrasGuardado = finalizarEdicionTrasGuardado;
+  window.cancelarEdicion = cancelarEdicion;
 }
 
-// Exponer helpers globales para que registro.js pueda invocarlos fácilmente
-window.onRegistroGuardado = (detail = {}) => {
-  // Opcional: podrías validar con detail.placa si quieres
-  finalizarEdicionTrasGuardado();
-};
-window.onRegistroCancelado = () => cancelarEdicion();
-
-// También aceptamos eventos del tipo CustomEvent por si prefieres dispatchEvent
-window.addEventListener('registro:guardado', finalizarEdicionTrasGuardado);
-window.addEventListener('registro:cancelado', cancelarEdicion);
+// ===============================
+// Abrir popup/overlay del formulario
+// ===============================
+function abrirPopupRegistro() {
+  try {
+    // Tu lógica nativa para abrir el modal del registro
+    abrirFormulario?.();
+  } catch (e) {
+    console.warn('No se pudo abrir el formulario:', e.message);
+  }
+}
 
 // ===============================
-// Arranque
+// Init
 // ===============================
 document.addEventListener('DOMContentLoaded', () => {
-  // Si además quieres recalcular opciones dinámicas o cargar estado local, puedes mantener estas líneas:
-  if (typeof configurarBotonesDinamicos === 'function') configurarBotonesDinamicos?.();
-  if (typeof cargarTodoDesdeStorage === 'function') cargarTodoDesdeStorage?.();
-
-  // 🔹 Cargar la tabla al inicio (clave para que no se “vacíe” tras F5)
+  // Cargar la tabla al inicio
   mostrarRegistrosDelServidor();
 
-  // 🔹 Polling opcional para refrescar la tabla cada cierto tiempo
-  // setInterval(mostrarRegistrosDelServidor, 30000); // cada 30s, si lo quieres
+  // Cargar pendientes inicialmente y refrescar cada 4s
   obtenerPendientesDelServidor();
-  setInterval(obtenerPendientesDelServidor, 4000); // polling de pendientes cada 4s
+  setInterval(obtenerPendientesDelServidor, 4000);
 });
