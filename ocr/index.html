@@ -59,6 +59,9 @@
     // ⚠️ Para producción, ideal mover este token al backend.
     const API_TOKEN = '3f8ef072e79205794e226ac4c63907d1b081c500';
 
+    // 👉 NUEVO: aquí guardamos EXACTAMENTE la foto que se manda a PR
+    let imagenOCRCapturada = "";
+
     // ==== Cámara ====
     async function iniciarCamara() {
       try {
@@ -80,7 +83,7 @@
     // Utilidades
     const normalizar = s => String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
 
-    // —— NUEVO: helpers de imagen para el pendiente ——
+    // —— helpers de imagen para el pendiente ——
     function snapshotDeVideo(videoEl) {
       const c = document.createElement('canvas');
       const w = videoEl.videoWidth || videoEl.clientWidth || 640;
@@ -109,6 +112,13 @@
       estadoOCR.textContent = 'Procesando imagen...';
 
       canvas.toBlob(async (blob) => {
+        // 👉 NUEVO: convertir EL MISMO blob a dataURL y guardarlo
+        try {
+          const fr = new FileReader();
+          fr.onload = () => { imagenOCRCapturada = fr.result; }; // data:image/jpeg;base64,...
+          fr.readAsDataURL(blob);
+        } catch {}
+
         const formData = new FormData();
         formData.append('upload', blob, 'captura.jpg');
         formData.append('regions', 'mx');
@@ -147,7 +157,7 @@
           console.error('Error con PlateRecognizer:', err);
           estadoOCR.textContent = 'Error al procesar imagen ❌';
         }
-      }, 'image/jpeg', 0.9);
+      }, 'image/jpeg', 0.9); // mantener mismo formato/calidad que PR
     });
 
     // ==== Confirmar y enviar a /api/pendientes (con anti-duplicados) ====
@@ -184,13 +194,13 @@
 
       try {
         estadoSend.textContent = 'Enviando…';
-        // NUEVO: captura imagen del video o último canvas
-        const imagen = imagenActualParaPendiente(video, canvas);
+        // 👉 NUEVO: usar LA MISMA foto que se mandó a PR (con fallback suave)
+        const imagen = imagenOCRCapturada || imagenActualParaPendiente(video, canvas);
 
         const r = await fetch('/api/pendientes', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ placa, imagen }) // ← antes mandaba solo { placa }
+          body: JSON.stringify({ placa, imagen }) // antes era solo { placa }
         });
         const data = await r.json();
         if (!r.ok) throw new Error(data?.msg || 'Error al enviar');
