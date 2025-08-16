@@ -1,5 +1,5 @@
 // ===============================
-// main.js – Pendientes + miniatura con zoom
+// main.js – Pendientes + miniatura con zoom (hora fija por ts)
 // ===============================
 
 // 🌐 Base de API (relativa en prod). Puedes sobreescribir con window.API_BASE_OVERRIDE
@@ -56,6 +56,13 @@ let pendienteEnEdicion = null; // { id, card, placa }
 // ===============================
 const horaCorta = () =>
   new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+// Hora fija basada en el timestamp del pendiente
+function formatearHora(ts) {
+  const d = new Date(Number(ts));
+  if (isNaN(d)) return horaCorta();
+  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
 
 // Contenedor para las tarjetas de pendientes (si no existe lo crea debajo del título)
 function ensureContenedorPendientes() {
@@ -128,10 +135,11 @@ async function consumirPendienteEnBackend(id) {
 function agregarPlacaPendiente(data) {
   const payload =
     typeof data === 'string'
-      ? { id: Date.now(), placa: data, imagen: '', hora: horaCorta() }
+      ? { id: Date.now(), placa: data, imagen: '', ts: Date.now() } // fallback local
       : (data || {});
 
-  const { id, placa = '', hora = horaCorta() } = payload;
+  const { id, placa = '', ts } = payload;
+  const hora = ts ? formatearHora(ts) : (payload.hora || horaCorta());
   const imagen = urlImagenSegura(payload.imagen);
 
   const tarjeta = document.createElement('div');
