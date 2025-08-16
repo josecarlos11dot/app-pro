@@ -80,6 +80,25 @@
     // Utilidades
     const normalizar = s => String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
 
+    // —— NUEVO: helpers de imagen para el pendiente ——
+    function snapshotDeVideo(videoEl) {
+      const c = document.createElement('canvas');
+      const w = videoEl.videoWidth || videoEl.clientWidth || 640;
+      const h = videoEl.videoHeight || videoEl.clientHeight || 480;
+      c.width = w; c.height = h;
+      c.getContext('2d').drawImage(videoEl, 0, 0, w, h);
+      return c.toDataURL('image/jpeg', 0.8); // data:image/jpeg;base64,...
+    }
+    function imagenActualParaPendiente(videoEl, canvasEl) {
+      try { if (videoEl && videoEl.readyState >= 2) return snapshotDeVideo(videoEl); } catch {}
+      try {
+        if (canvasEl && canvasEl.width && canvasEl.height) {
+          return canvasEl.toDataURL('image/jpeg', 0.8);
+        }
+      } catch {}
+      return '';
+    }
+
     // ==== Capturar y reconocer (PlateRecognizer) ====
     btnCapturar.addEventListener('click', async () => {
       // Dibuja frame completo (tu base original)
@@ -165,8 +184,13 @@
 
       try {
         estadoSend.textContent = 'Enviando…';
+        // NUEVO: captura imagen del video o último canvas
+        const imagen = imagenActualParaPendiente(video, canvas);
+
         const r = await fetch('/api/pendientes', {
-          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ placa })
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ placa, imagen }) // ← antes mandaba solo { placa }
         });
         const data = await r.json();
         if (!r.ok) throw new Error(data?.msg || 'Error al enviar');
