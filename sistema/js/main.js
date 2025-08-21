@@ -238,7 +238,12 @@ export function cancelarEdicion() {
 if (typeof window !== 'undefined') {
   window.finalizarEdicionTrasGuardado = finalizarEdicionTrasGuardado;
   window.cancelarEdicion = cancelarEdicion;
+
+  // 🔗 Puente con registro.js
+  window.onRegistroGuardado = ({ placa }) => finalizarEdicionTrasGuardado();
+  window.onRegistroCancelado = () => cancelarEdicion();
 }
+
 
 // ===============================
 // Abrir popup/overlay del formulario
