@@ -26,9 +26,11 @@ let _cierrePorGuardado = false;
 
 
 export function setEdicionRegistro(id) {
-  filaEditando = (id && String(id).trim()) || null;
+  const limpio = String(id || '').trim();
+  filaEditando = /^[a-f\d]{24}$/i.test(limpio) ? limpio : null;
 }
 if (typeof window !== 'undefined') window.setEdicionRegistro = setEdicionRegistro;
+
 
 
 
@@ -53,15 +55,16 @@ setTimeout(precalentarBackendRegistros, 8000);
 
 
 async function guardarRegistroEnBackend(data, id = null, { timeoutMs = 15000 } = {}) {
-  const idValido = !!(id && String(id).trim());
+  const limpio = String(id || '').trim();
+  const idValido = /^[a-f\d]{24}$/i.test(limpio);
+
   const url = idValido
-    ? `${API_REGISTROS_BASE}/api/registros/${encodeURIComponent(String(id).trim())}`
+    ? `${API_REGISTROS_BASE}/api/registros/${encodeURIComponent(limpio)}`
     : `${API_REGISTROS_BASE}/api/registros`;
   const metodo = idValido ? 'PUT' : 'POST';
 
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort('timeout'), timeoutMs);
-
   try {
     let res = await fetch(url, {
       method: metodo,
@@ -70,30 +73,25 @@ async function guardarRegistroEnBackend(data, id = null, { timeoutMs = 15000 } =
       signal: ctrl.signal
     });
 
-    // 🔁 Fallback opcional: si el backend no acepta PUT/route param (404/405),
-    // intenta POST /api/registros enviando {_id: id, ...data}
+    // (fallback opcional si tu backend no tuviera PUT/param)
     if (idValido && (res.status === 404 || res.status === 405)) {
       res = await fetch(`${API_REGISTROS_BASE}/api/registros`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ _id: String(id).trim(), ...data }),
+        body: JSON.stringify({ _id: limpio, ...data }),
         signal: ctrl.signal
       });
     }
 
     const text = await res.text().catch(() => '');
     let json; try { json = text ? JSON.parse(text) : undefined; } catch {}
-
-    if (!res.ok) {
-      const detalle = json?.error || json?.message || text || `HTTP ${res.status}`;
-      throw new Error(detalle);
-    }
-
+    if (!res.ok) throw new Error(json?.error || json?.message || text || `HTTP ${res.status}`);
     return json || {};
   } finally {
     clearTimeout(timer);
   }
 }
+
 
 
 // ---- UI: abrir/cerrar
