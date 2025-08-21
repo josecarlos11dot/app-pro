@@ -25,8 +25,9 @@ let filaEditando = null;
 let _cierrePorGuardado = false;
 
 
-// ✅ Agrega estas dos líneas AQUÍ
-export function setEdicionRegistro(id) { filaEditando = id; }
+export function setEdicionRegistro(id) {
+  filaEditando = (id && String(id).trim()) || null;
+}
 if (typeof window !== 'undefined') window.setEdicionRegistro = setEdicionRegistro;
 
 
@@ -51,39 +52,49 @@ precalentarBackendRegistros();
 setTimeout(precalentarBackendRegistros, 8000);
 
 
-/**
- * Guarda el registro en backend con timeout (default 15s).
- * Devuelve el JSON de la respuesta (o {} si 204/no JSON).
- */
 async function guardarRegistroEnBackend(data, id = null, { timeoutMs = 15000 } = {}) {
-  const url = id
-    ? `${API_REGISTROS_BASE}/api/registros/${id}`
+  const idValido = !!(id && String(id).trim());
+  const url = idValido
+    ? `${API_REGISTROS_BASE}/api/registros/${encodeURIComponent(String(id).trim())}`
     : `${API_REGISTROS_BASE}/api/registros`;
-  const metodo = id ? 'PUT' : 'POST';
+  const metodo = idValido ? 'PUT' : 'POST';
 
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort('timeout'), timeoutMs);
 
   try {
-    const res = await fetch(url, {
+    let res = await fetch(url, {
       method: metodo,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
       signal: ctrl.signal
     });
 
-    if (!res.ok) {
-      const t = await res.text().catch(() => '');
-      throw new Error(`HTTP ${res.status} ${t}`.trim());
+    // 🔁 Fallback opcional: si el backend no acepta PUT/route param (404/405),
+    // intenta POST /api/registros enviando {_id: id, ...data}
+    if (idValido && (res.status === 404 || res.status === 405)) {
+      res = await fetch(`${API_REGISTROS_BASE}/api/registros`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ _id: String(id).trim(), ...data }),
+        signal: ctrl.signal
+      });
     }
 
-    // Si el backend responde 204 (sin cuerpo), devolvemos objeto vacío
-    if (res.status === 204) return {};
-    return res.json().catch(() => ({}));
+    const text = await res.text().catch(() => '');
+    let json; try { json = text ? JSON.parse(text) : undefined; } catch {}
+
+    if (!res.ok) {
+      const detalle = json?.error || json?.message || text || `HTTP ${res.status}`;
+      throw new Error(detalle);
+    }
+
+    return json || {};
   } finally {
     clearTimeout(timer);
   }
 }
+
 
 // ---- UI: abrir/cerrar
 export function abrirFormulario() {
@@ -170,18 +181,16 @@ registroForm.addEventListener('submit', async (e) => {
     cerrarFormulario();
   } catch (err) {
     console.error('Error al guardar en backend:', err);
-    const esTimeout =
-      err?.name === 'AbortError' ||
-      /abort|timeout/i.test(String(err?.message || ''));
-
+    const esTimeout = err?.name === 'AbortError' || /abort|timeout/i.test(String(err?.message || ''));
     const msg = esTimeout
       ? 'Se agotó el tiempo de espera (red lenta). Inténtalo de nuevo.'
-      : 'No se pudo guardar el registro. Revisa tu conexión e inténtalo de nuevo.';
+      : `No se pudo guardar el registro: ${err.message}`;
     alert(msg);
-
+  
     _cierrePorGuardado = false;
     restoreBtn();
   }
+     
 });
 
 
