@@ -267,8 +267,19 @@ h1, h2 {
 ============================================================================ */
 #pendientesRegistro {
   display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* 🔑 varias columnas */
   gap: 12px;
   margin: 8px 0 20px;
+
+  /* 🔑 límite de altura con scroll interno */
+  max-height: calc(100vh - 280px); /* ajusta 280px según tu header/botones */
+  overflow-y: auto;
+
+  align-content: start;
+  padding: 8px;
+  background: #fefefe;
+  border: 1px solid #ddd;
+  border-radius: 8px;
 }
 
 .pendiente-card {
