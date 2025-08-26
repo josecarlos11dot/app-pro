@@ -246,29 +246,29 @@ a:hover { text-decoration: underline; }
 }
 
 
-/* ===== Modales con :target (solo CSS, sin JS) ===== */
+/* ===== Modales con :target (solo CSS) ===== */
 
-/* El layout ya no reserva una columna fija a la izquierda */
+/* 1 columna por defecto; ya no sidebar fija */
 .layout-contenido { grid-template-columns: 1fr; }
 
 /* Ocultos por defecto */
 #panelFiltros, #formulario { display: none; }
 
-/* Abrir como modal centrado al ser objetivo del hash */
+/* Se vuelven modal al ser objetivo del hash */
 #panelFiltros:target,
 #formulario:target{
   display: block;
   position: fixed;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  width: min(720px, 96%);   /* si quieres, usa 600px para filtros */
+  width: min(720px, 96%);
   max-height: 90vh;
   overflow: auto;
   padding: 20px;
   z-index: 1000;
 }
 
-/* Overlay y bloqueo de scroll (sin JS) */
+/* Overlay + bloqueo de scroll */
 html:has(#panelFiltros:target),
 html:has(#formulario:target){ overflow: hidden; }
 
@@ -280,7 +280,7 @@ html:has(#formulario:target)::before{
   z-index: 999;
 }
 
-/* Botón de cierre en esquina */
+/* La X fija en la esquina del panel */
 #panelFiltros:target .btn-cerrar-filtros,
 #formulario:target .btn-cerrar-formulario{
   position: absolute; top: 10px; right: 10px;
