@@ -1,555 +1,246 @@
-/* ============================================================================
-   RESET Y TIPOGRAFÍA GENERAL
-============================================================================ */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+/* ===========================
+   Neon + Gradient Skin (sin clases nuevas)
+   Mapea SOLO a tus clases existentes del index.html
+   =========================== */
+
+/* Tokens del tema */
+:root{
+  --bg: #0b0f14;
+  --surface: #101826;
+  --surface-2: #0d131e;
+  --text: #e5e7eb;
+  --muted: #9aa3b2;
+
+  --brand: #06b6d4;   /* cian */
+  --brand-2: #a855f7; /* violeta */
+
+  --radius: 14px;
+  --r-sm: 10px;
+  --gap: 14px;
+
+  --hairline: rgba(255,255,255,.08);
+  --shadow-lg: 0 10px 30px rgba(0,0,0,.45);
+  --glow-a: 0 0 12px rgba(6,182,212,.55);
+  --glow-b: 0 0 18px rgba(168,85,247,.35);
 }
 
+/* Reset suave + base */
+* { box-sizing: border-box; }
+html, body { height: 100%; }
 body {
-  font-family: 'Segoe UI', sans-serif;
-  background: #f4f6f8;
-  color: #333;
-  line-height: 1.6;
-  height: 100vh;
-  overflow: hidden;
-}
-
-/* ============================================================================
-   CONTENEDORES GENERALES
-============================================================================ */
-.container {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 20px;
-}
-
-.layout-contenido {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 20px;
-  max-width: 1280px;
-  margin: 0 auto;
-  height: 100vh;
-  overflow: hidden;
-}
-
-.contenido-principal {
-  flex: 1;
-  min-width: 0;
-}
-
-/* ============================================================================
-   ENCABEZADO
-============================================================================ */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-}
-.header__botones {
-  display: flex;
-  gap: 10px;
-}
-
-h1, h2 {
-  color: #2c3e50;
-}
-
-/* ============================================================================
-   BOTONES
-============================================================================ */
-.btn-primario,
-.btn-secundario {
-  background-color: #2c3e50;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
-}
-.btn-primario:hover,
-.btn-secundario:hover {
-  background-color: #34495e;
-}
-
-.btn-editar {
-  background-color: #f39c12;
-  color: white;
-  border-radius: 6px;
-  font-size: 14px;
-}
-.btn-editar:hover {
-  background-color: #e67e22;
-}
-
-.btn-eliminar {
-  background-color: #e74c3c;
-  color: white;
-  border-radius: 6px;
-  font-size: 14px;
-  margin-left: 6px;
-}
-
-.btn-agregar {
-  margin-top: 8px;
-  padding: 6px 12px;
-  background-color: #3498db;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-}
-.btn-agregar:hover {
-  background-color: #2980b9;
-}
-
-/* ============================================================================
-   PANEL DE FILTROS (LATERAL IZQUIERDO)
-============================================================================ */
-.panel-filtros {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 280px;
-  height: 100%;
-  background-color: #f9f9f9;
-  padding: 20px;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
-  transform: translateX(-100%);
-  transition: transform 0.3s ease-in-out;
-  z-index: 999;
-  overflow-y: auto;
-  border-right: 1px solid #ccc;
-}
-.panel-filtros.activo {
-  transform: translateX(0);
-}
-.btn-cerrar-filtros {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background: none;
-  border: none;
-  font-size: 22px;
-  cursor: pointer;
-  z-index: 1001;
-  color: #333;
-}
-
-/* ============================================================================
-   FORMULARIO (LATERAL DERECHO)
-============================================================================ */
-.formulario-panel {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 360px;
-  height: 100%;
-  background-color: #ffffff;
-  padding: 20px;
-  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
-  transform: translateX(100%);
-  transition: transform 0.3s ease-in-out;
-  z-index: 999;
-  overflow-y: auto;
-}
-.formulario-panel.activo {
-  transform: translateX(0);
-}
-
-#formulario.formulario-panel.activo {
-  height: 100vh;
-  max-height: 100vh;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  max-width: 360px;
-  min-width: 300px;
-  padding: 20px;
-}
-
-.btn-cerrar-formulario {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  z-index: 1001;
-  color: #333;
-}
-
-#overlayRegistro,
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.4);
-  z-index: 998;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease;
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
-}
-#overlayRegistro.activo,
-.overlay.activo {
-  opacity: 1;
-  visibility: visible;
-}
-
-/* ============================================================================
-   LINEA ESPERA REGISTRO
-============================================================================ */
-.panel-pendientes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  background: #fefefe;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.tarjeta-pendiente {
-  border: 1px solid #ccc;
-  padding: 10px;
-  width: 160px;
-  border-radius: 6px;
-  background-color: #fff;
-  text-align: center;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  animation: aparecer 0.3s ease-out;
-}
-
-.tarjeta-pendiente img {
-  width: 100%;
-  border-radius: 4px;
-  margin-bottom: 8px;
-}
-
-.tarjeta-pendiente button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.tarjeta-pendiente button:hover {
-  background-color: #0056b3;
-}
-
-@keyframes aparecer {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ============================================================================
-   TARJETAS
-============================================================================ */
-#pendientesRegistro {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); /* 🔑 varias columnas */
-  gap: 12px;
-  margin: 8px 0 20px;
-
-  /* 🔑 límite de altura con scroll interno */
-  max-height: calc(100vh - 280px); /* ajusta 280px según tu header/botones */
-  overflow-y: auto;
-
-  align-content: start;
-  padding: 8px;
-  background: #fefefe;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-}
-
-.pendiente-card {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0,0,0,.06);
-}
-
-.pendiente-izq { display: grid; gap: 6px; }
-.placa { font-weight: 700; font-size: 1.1rem; letter-spacing: .5px; }
-.hora { font-size: .9rem; color: #666; }
-.btn-registrar {
-  padding: 6px 10px; border: 0; border-radius: 8px;
-  background: #0d6efd; color: #fff; cursor: pointer;
-}
-.pendiente-der img { max-height: 70px; border-radius: 8px; }
-.pendiente-vacio { color:#888; font-size:.95rem; padding:8px 0; }
-
-
-/* ============================================================================
-   GRUPOS DEL FORMULARIO
-============================================================================ */
-.grupo {
-  padding: 12px 16px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  margin-bottom: 14px;
-}
-.grupo label {
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 6px;
-  display: block;
-}
-.grupo .botonera {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  width: 100%;
-}
-.grupo .botonera button {
-  padding: 8px 14px;
-  border: 1px solid #bdc3c7;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  background-color: #ecf0f1;
-}
-.grupo .botonera button.activo {
-  background-color: #4caf51 !important;
-  color: black;
-  border-color: #00fa21;
-  font-weight: bold;
-}
-
-/* Colores por grupo */
-.grupo.marca .botonera button { background-color: #e8f5ff; border-color: #a0ccee; }
-.grupo.marca .botonera button:hover { background-color: #cce8ff; }
-
-.grupo.modelo .botonera button { background-color: #f3e8ff; border-color: #cba8ee; }
-.grupo.modelo .botonera button:hover { background-color: #e4ccff; }
-
-.grupo.color .botonera button { background-color: #fff8e1; border-color: #eedd99; }
-.grupo.color .botonera button:hover { background-color: #fff1c7; }
-
-.grupo.precio .botonera button { background-color: #e8ffe8; border-color: #a5e6a5; }
-.grupo.precio .botonera button:hover { background-color: #ccffcc; }
-
-.grupo.lavador .botonera button { background-color: #ffeef0; border-color: #f5c6cb; }
-.grupo.lavador .botonera button:hover { background-color: #ffdede; }
-
-.fila-botones {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  justify-content: flex-start;
-  margin: 10px;
-}
-
-/* ============================================================================
-   FILTROS Y SUGERENCIAS
-============================================================================ */
-.btn-filtros-toggle {
-  margin-bottom: 10px;
-}
-#panelFiltros input {
-  width: 100%;
-  margin-top: 3px;
-}
-#panelFiltros button {
-  width: 100%;
-  margin-top: 10px;
-}
-.sugerencias {
-  list-style: none;
   margin: 0;
-  padding: 0;
-  position: absolute;
-  background: white;
-  border: 1px solid #ccc;
-  width: 200px;
-  z-index: 10;
-  max-height: 150px;
-  overflow-y: auto;
+  background: var(--bg);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.45;
 }
-.sugerencias li {
-  padding: 5px;
-  cursor: pointer;
-}
-.sugerencias li:hover {
-  background-color: #f0f0f0;
-}
-#inputPlaca {
-  text-transform: uppercase;
+a { color: #c4b5fd; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Layout principal */
+.container { width: min(1180px, 94%); margin: 20px auto; }
+.layout-contenido{
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--gap);
 }
 
-/* ============================================================================
-   TABLA DE REGISTROS
-============================================================================ */
-.tabla-contenedor {
-  overflow-x: auto;
-  background: white;
-  padding: 10px;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0,0,0,.1);
-}
-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 800px;
-}
-th, td {
-  padding: 12px;
-  text-align: center;
-  border-bottom: 1px solid #ddd;
-}
-th {
-  background-color: #ecf0f1;
-  color: #2c3e50;
-  font-weight: bold;
+/* Overlays (apagados por defecto; tu JS puede mostrarlos con style/display) */
+.overlay{
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.45);
+  display: none; /* tu JS lo puede poner en block/grid */
+  z-index: 900;
 }
 
-/* ============================================================================
-   MEDIA QUERIES PARA RESPONSIVIDAD
-============================================================================ */
-/* ============================
-   OPTIMIZACIÓN PARA IPHONE
-============================ */
-@media (max-width: 768px) {
-  /* Ocultar tabla y filtros */
-  #tablaRegistros,
-  #panelFiltros,
-  #btnToggleFiltros {
-    display: none;
-  }
-
-  /* Botón de + Registro más grande */
-  #btnNuevo {
-    width: 100%;
-    font-size: 18px;
-    padding: 16px;
-  }
-
-  /* Formulario ocupa toda la pantalla */
-  #formulario.formulario-panel.activo {
-    top: 0;
-    right: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    max-height: 100vh;
-    padding: 20px;
-    font-size: 16px;
-  }
-
-  /* Inputs y botones más cómodos */
-  .formulario-panel input,
-  .formulario-panel button {
-    font-size: 16px;
-    padding: 14px;
-  }
-
-  /* Espacio extra debajo del formulario para que el botón no quede tapado */
-  .formulario-panel form {
-    padding-bottom: 60px;
-  }
-
-  .formulario-panel button[type="submit"] {
-    margin-bottom: 20px;
-  }
-
-  /* Botonera más separada y en columna */
-  .botonera {
-    flex-direction: column;
-  }
-
-  /* Evita scroll horizontal innecesario */
-  .container,
-  .layout-contenido {
-    max-width: 100%;
-    padding: 0 10px;
-  }
+/* Sidebar de filtros */
+.panel-filtros{
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 16px;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--surface), var(--surface)) padding-box,
+    linear-gradient(140deg, var(--brand), var(--brand-2)) border-box;
+  box-shadow: var(--glow-a), var(--glow-b), var(--shadow-lg);
+  position: sticky; top: 16px; height: max-content;
 }
-.resumen-dia {
-  display: none;
-  background-color: #ffffff;
-  padding: 10px;
-  margin: 12px 0;
-  border-radius: 10px;
-  box-shadow: 0 0 6px rgba(0,0,0,0.1);
-  font-size: 14px;
-  color: #333;
-  overflow-x: auto;
+.panel-filtros h3{ margin: 6px 0 10px; }
+.panel-filtros label{ color: var(--muted); font-size: 14px; }
+.panel-filtros input[type="date"],
+.panel-filtros input[type="text"],
+.panel-filtros input[type="number"]{
+  width: 100%; margin-top: 6px;
+  background: var(--surface-2);
+  border: 1px solid var(--hairline);
+  color: var(--text); padding: 10px 12px; border-radius: var(--r-sm);
+  outline: none; transition: box-shadow .15s ease, border-color .15s ease;
+}
+.panel-filtros input:focus{
+  border-color: transparent;
+  background:
+    linear-gradient(var(--surface-2), var(--surface-2)) padding-box,
+    linear-gradient(135deg, var(--brand), var(--brand-2)) border-box;
+  box-shadow: var(--glow-a), var(--glow-b);
+}
+#resultadoFiltros{ color:#e2e8f0; }
+
+/* Botón cerrar filtros */
+.btn-cerrar-filtros,
+.btn-cerrar-formulario{
+  appearance: none; border: 1px solid transparent; cursor: pointer;
+  font-weight: 700; border-radius: 999px;
+  padding: 6px 10px; line-height: 1;
+  color: #fff; background: transparent;
+  background-image:
+    linear-gradient(var(--surface),var(--surface)),
+    linear-gradient(135deg, var(--brand) 10%, var(--brand-2) 90%);
+  background-origin: border-box; background-clip: padding-box, border-box;
+  box-shadow: var(--glow-a), var(--glow-b);
 }
 
-.resumen-dia table {
-  width: 100%;
-  border-collapse: collapse;
+/* Contenido principal */
+.contenido-principal{ display: grid; gap: var(--gap); }
+
+/* Header y botones principales (+Registro, Mostrar filtros) */
+.header{
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 12px 16px;
+  background: rgba(255,255,255,.02);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
+  backdrop-filter: blur(6px);
+}
+.header h1{ margin: 0; font-size: 20px; letter-spacing: .3px; }
+.header__botones{ display:flex; gap: 10px; flex-wrap: wrap; }
+
+/* Botones primario/secundario/agregar – SIN crear clases nuevas */
+.btn-primario, .btn-secundario, .btn-agregar,
+#btnAplicarFiltros, #btnLimpiarFiltros {
+  appearance: none; border: 1px solid transparent; cursor: pointer;
+  font-weight: 600; border-radius: var(--r-sm);
+  padding: 10px 14px; transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+  color: #fff; background: transparent;
+  background-image:
+    linear-gradient(var(--bg), var(--bg)),
+    linear-gradient(135deg, var(--brand) 10%, var(--brand-2) 90%);
+  background-origin: border-box; background-clip: padding-box, border-box;
+  box-shadow: var(--glow-a), var(--glow-b);
+}
+.btn-primario:hover, .btn-secundario:hover, .btn-agregar:hover,
+#btnAplicarFiltros:hover, #btnLimpiarFiltros:hover{
+  transform: translateY(-1px) scale(1.01);
 }
 
-.resumen-dia th,
-.resumen-dia td {
-  padding: 8px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-  white-space: nowrap;
+/* Resumen del día y panel de pendientes como "cards" */
+.resumen-dia,
+.panel-pendientes,
+.formulario-panel,
+.tabla-contenedor{
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 16px;
+  border: 1px solid transparent;
+  background:
+    linear-gradient(var(--surface), var(--surface)) padding-box,
+    linear-gradient(140deg, var(--brand), var(--brand-2)) border-box;
+  box-shadow: var(--glow-a), var(--glow-b), var(--shadow-lg);
 }
 
-.resumen-dia th {
-  background-color: #f0f0f0;
-  font-weight: bold;
+/* Grid para pendientes (cards responsivas) */
+.panel-pendientes{
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--gap);
 }
 
-@media (max-width: 768px) {
-  .resumen-dia {
-    display: block;
-  }
+/* Formulario “popup” (centrado visualmente como panel) */
+.formulario-panel{
+  position: relative; /* para el botón de cerrar */
 }
-/* === OCULTAR RESUMEN EN ESCRITORIO === */
-@media (min-width: 769px) {
-  #resumenDia {
-    display: none;
-  }
+.btn-cerrar-formulario{
+  position: absolute; top: 10px; right: 10px;
 }
 
-/* === Marcas / Modelos (UI nueva) === */
-#marcas, #modelos { display:flex; flex-wrap:wrap; gap:8px }
+/* Campos del formulario */
+.grupo{ margin-top: 12px; }
+.grupo label{ display:block; margin-bottom:6px; color: var(--muted); }
 
-/* Botón base */
-.btn-choice{
-  background:#121a2b; border:1px solid #2a3347; color:#dbe3f5;
-  padding:8px 12px; border-radius:10px; cursor:pointer; user-select:none;
+#registroForm input[type="text"]{
+  width: 100%; padding: 10px 12px;
+  background: var(--surface-2); color: var(--text);
+  border: 1px solid var(--hairline); border-radius: var(--r-sm);
+  outline: none; transition: box-shadow .15s ease, border-color .15s ease;
 }
-.btn-choice:hover{ transform: translateY(-1px); }
-
-/* Activo (igual que tu .activo) */
-.btn-choice.active{
-  background:linear-gradient(180deg,#1b3b75,#1e6e45);
-  border-color:#31548a; color:#fff;
+#registroForm input[type="text"]:focus{
+  border-color: transparent;
+  background:
+    linear-gradient(var(--surface-2), var(--surface-2)) padding-box,
+    linear-gradient(135deg, var(--brand), var(--brand-2)) border-box;
+  box-shadow: var(--glow-a), var(--glow-b);
 }
 
-/* Si los botones viven dentro de .grupo .botonera, iguala .active a tu .activo */
-.grupo .botonera button.active{
-  background-color:#4caf51 !important;
-  color:black;
-  border-color:#00fa21;
-  font-weight:bold;
+/* Sugerencias de placa */
+.sugerencias{
+  list-style: none; margin: 6px 0 0; padding: 0;
+  background: #0e1522; border: 1px solid var(--hairline);
+  border-radius: var(--r-sm);
+  max-height: 200px; overflow: auto;
+}
+.sugerencias li{
+  padding: 8px 10px; border-top: 1px solid var(--hairline);
+}
+.sugerencias li:first-child{ border-top: none; }
+.sugerencias li:hover{ background: rgba(255,255,255,.03); cursor: pointer; }
+
+/* Botoneras de marca/modelo/color/precio/lavador */
+.botonera{
+  display: flex; flex-wrap: wrap; gap: 10px;
+}
+.botonera button{
+  appearance: none; border: 1px solid transparent; cursor: pointer;
+  font-weight: 600; border-radius: 999px;
+  padding: 8px 12px; color: #fff; background: transparent;
+  background-image:
+    linear-gradient(var(--surface-2), var(--surface-2)),
+    linear-gradient(135deg, var(--brand) 10%, var(--brand-2) 90%);
+  background-origin: border-box; background-clip: padding-box, border-box;
+  box-shadow: var(--glow-a), var(--glow-b);
+  transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+}
+.botonera button:hover{ transform: translateY(-1px); }
+/* Estados posibles sin crear nuevas clases: cubrimos varias convenciones */
+.botonera button[aria-pressed="true"],
+.botonera .selected,
+.botonera .activo{
+  color: #0b0f14;
+  background: linear-gradient(135deg, #7dd3fc 0%, #a78bfa 100%);
+  box-shadow: 0 6px 20px rgba(125,211,252,.25);
+}
+
+/* Tabla de registros */
+.tabla-contenedor{ overflow: auto; }
+.tabla-contenedor table{
+  width: 100%; border-collapse: collapse;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.tabla-contenedor thead th{
+  text-align: left; padding: 12px;
+  background: rgba(255,255,255,.04); color: #cbd5e1; font-weight: 600;
+}
+.tabla-contenedor tbody td{ padding: 12px; border-top: 1px solid var(--hairline); }
+.tabla-contenedor tbody tr:hover{ background: rgba(255,255,255,.03); }
+
+/* Accesibilidad foco */
+:where(button, input, select, textarea){ outline-offset: 3px; }
+:where(button, input, select, textarea):focus-visible{ outline: 2px solid #7dd3fc; }
+
+/* Responsive */
+@media (max-width: 960px){
+  .layout-contenido{ grid-template-columns: 1fr; }
+  .panel-filtros{ position: relative; top: auto; }
+  .header{ flex-direction: column; align-items: flex-start; gap: 10px; }
 }
