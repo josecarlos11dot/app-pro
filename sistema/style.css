@@ -563,3 +563,33 @@ th {
 #marcas button.active, #modelos button.active{
   background:linear-gradient(180deg,#1b3b75,#1e6e45);border-color:#31548a;color:#fff;
 }
+
+
+/* === Popup 'Nuevo Lavado' más grande === */
+#overlayRegistro .overlay-contenido,
+#overlayRegistro .contenido,
+#overlayRegistro .panel,
+#overlayRegistro .ventana,
+#overlayRegistro .popup,
+#overlayRegistro .card,
+#overlayRegistro section {
+  width: min(96vw, 760px) !important;
+  max-width: 760px !important;
+  max-height: calc(100vh - 64px);
+  overflow: auto;
+  margin-left: auto;
+  margin-right: clamp(8px, 2vw, 24px);
+}
+
+@media (min-width: 1280px){
+  #overlayRegistro .overlay-contenido,
+  #overlayRegistro .contenido,
+  #overlayRegistro .panel,
+  #overlayRegistro .ventana,
+  #overlayRegistro .popup,
+  #overlayRegistro .card,
+  #overlayRegistro section {
+    width: 820px !important;
+    max-width: 820px !important;
+  }
+}
