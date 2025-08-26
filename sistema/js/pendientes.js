@@ -38,15 +38,27 @@ export function renderTarjetaPendiente(item, onRegistrar) {
     <div class="pendiente-izq">
       <div class="placa">${item.placa}</div>
       <div class="hora">${item.hora ?? ''}</div>
-      <button class="btn-registrar">Registrar</button>
+
+      <!-- ANTES: <button class="btn-registrar">Registrar</button> -->
+      <a class="btn-registrar"
+         href="#formulario"
+         data-placa="${item.placa || ''}"
+         data-imagen="${item.imagen || ''}">
+        Registrar
+      </a>
     </div>
     <div class="pendiente-der">
       ${item.imagen ? `<img src="${item.imagen}" alt="placa ${item.placa}">` : ''}
     </div>
   `;
 
+  // Prefill antes de que el hash abra el modal
   card.querySelector('.btn-registrar')
-      .addEventListener('click', () => onRegistrar(item, card));
+      .addEventListener('click', () => {
+        onRegistrar?.(item, card);
+        // IMPORTANTE: no llames preventDefault aquí, deja que el <a> cambie el hash
+      });
 
   return card;
 }
+
