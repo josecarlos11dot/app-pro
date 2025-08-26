@@ -11,6 +11,16 @@ import {
   btnAgregarLavador, btnEditarLavadores, lavadoresDiv, inputLavador
 } from './referencias.js';
 
+// Fuente externa para Marcas/Modelos (inyectada desde index.js)
+export let MAKES_DATA = [];
+
+export function setDataMakes(list){
+  if (Array.isArray(list) && list.length){
+    MAKES_DATA = list;
+  }
+}
+
+
 // -------- Helpers seguros --------
 const A   = (v) => (Array.isArray(v) ? v : []);
 const has = (arr, val) => Array.isArray(arr) && arr.includes(val);
