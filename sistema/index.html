@@ -23,7 +23,8 @@
       <!-- 👇 Panel lateral de filtros 👇 -->
       
       <aside id="panelFiltros" class="panel-filtros">
-        <button id="btnCerrarFiltros" class="btn-cerrar-filtros">✕</button>
+        <a id="btnCerrarFiltros" class="btn-cerrar-filtros" href="#" aria-label="Cerrar filtros">✕</a>
+
         <h3>Filtros</h3>
         <label>Desde:<br><input type="date" id="filtroFechaInicio"></label><br><br>
         <label>Hasta:<br><input type="date" id="filtroFechaFin"></label><br><br>
@@ -46,8 +47,10 @@
         <header class="header">
           <h1>Registro de Lavado</h1>
           <div class="header__botones">
-          <button id="btnToggleFiltros" class="btn-primario">🎛 Mostrar filtros</button>
-          <button id="btnNuevo" class="btn-primario">+ Registro</button>
+          
+        <a id="btnToggleFiltros" class="btn-primario" href="#panelFiltros">🎛 Mostrar filtros</a>
+        <a id="btnNuevo" class="btn-primario" href="#formulario">+ Registro</a>
+
           </div>
         </header>
         <div id="resumenDia" class="resumen-dia"></div>
@@ -59,7 +62,9 @@
 
 
         <section id="formulario" class="formulario-panel">
-          <button id="btnCerrarFormulario" class="btn-cerrar-formulario">✕</button>
+          <!-- antes -->
+          <a id="btnCerrarFormulario" class="btn-cerrar-formulario" href="#" aria-label="Cerrar formulario">✕</a>
+
           <h2>Nuevo Lavado</h2>
           <form id="registroForm">
             <!-- Placa limpia sin OCR -->

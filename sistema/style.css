@@ -244,3 +244,44 @@ a:hover { text-decoration: underline; }
   .panel-filtros{ position: relative; top: auto; }
   .header{ flex-direction: column; align-items: flex-start; gap: 10px; }
 }
+
+
+/* ===== Modales con :target (solo CSS, sin JS) ===== */
+
+/* El layout ya no reserva una columna fija a la izquierda */
+.layout-contenido { grid-template-columns: 1fr; }
+
+/* Ocultos por defecto */
+#panelFiltros, #formulario { display: none; }
+
+/* Abrir como modal centrado al ser objetivo del hash */
+#panelFiltros:target,
+#formulario:target{
+  display: block;
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(720px, 96%);   /* si quieres, usa 600px para filtros */
+  max-height: 90vh;
+  overflow: auto;
+  padding: 20px;
+  z-index: 1000;
+}
+
+/* Overlay y bloqueo de scroll (sin JS) */
+html:has(#panelFiltros:target),
+html:has(#formulario:target){ overflow: hidden; }
+
+html:has(#panelFiltros:target)::before,
+html:has(#formulario:target)::before{
+  content: "";
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.45);
+  z-index: 999;
+}
+
+/* Botón de cierre en esquina */
+#panelFiltros:target .btn-cerrar-filtros,
+#formulario:target .btn-cerrar-formulario{
+  position: absolute; top: 10px; right: 10px;
+}
