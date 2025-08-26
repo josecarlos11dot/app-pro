@@ -530,3 +530,26 @@ th {
   }
 }
 
+/* === Marcas / Modelos (UI nueva) === */
+#marcas, #modelos { display:flex; flex-wrap:wrap; gap:8px }
+
+/* Botón base */
+.btn-choice{
+  background:#121a2b; border:1px solid #2a3347; color:#dbe3f5;
+  padding:8px 12px; border-radius:10px; cursor:pointer; user-select:none;
+}
+.btn-choice:hover{ transform: translateY(-1px); }
+
+/* Activo (igual que tu .activo) */
+.btn-choice.active{
+  background:linear-gradient(180deg,#1b3b75,#1e6e45);
+  border-color:#31548a; color:#fff;
+}
+
+/* Si los botones viven dentro de .grupo .botonera, iguala .active a tu .activo */
+.grupo .botonera button.active{
+  background-color:#4caf51 !important;
+  color:black;
+  border-color:#00fa21;
+  font-weight:bold;
+}
