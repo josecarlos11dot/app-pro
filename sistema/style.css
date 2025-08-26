@@ -553,3 +553,13 @@ th {
   border-color:#00fa21;
   font-weight:bold;
 }
+
+
+#marcas button, #modelos button{
+  background:#121a2b;border:1px solid #2a3347;color:#dbe3f5;
+  padding:8px 12px;border-radius:10px;cursor:pointer;user-select:none;margin:4px 6px 0 0;
+}
+#marcas button:hover, #modelos button:hover{ transform: translateY(-1px); }
+#marcas button.active, #modelos button.active{
+  background:linear-gradient(180deg,#1b3b75,#1e6e45);border-color:#31548a;color:#fff;
+}

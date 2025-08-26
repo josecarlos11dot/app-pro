@@ -19,6 +19,40 @@ export function setDataMakes(list){
     MAKES_DATA = list;
   }
 }
+// --- Aplica el JSON a `opciones` (una sola vez) ---
+let MAKES_APLICADO = false;
+
+// Convierte [{name, models:[{name}|string]}] → { name:string, models:string[] }
+function normalizaMakes(list){
+  return list
+    .map(m => ({
+      name: (m?.name ?? '').trim(),
+      models: Array.isArray(m?.models)
+        ? m.models
+            .map(mm => (typeof mm === 'string' ? mm : (mm?.name ?? '')))
+            .map(s => s.trim())
+            .filter(Boolean)
+        : []
+    }))
+    .filter(x => x.name);
+}
+
+function aplicarMakesDesdeJSON(){
+  if (MAKES_APLICADO || !Array.isArray(MAKES_DATA) || !MAKES_DATA.length) return;
+
+  // Limpia marcas existentes (no toca claves reservadas)
+  Object.keys(opciones)
+    .filter(k => !RESERVED.includes(k))
+    .forEach(k => { delete opciones[k]; });
+
+  // Inserta marcas/modelos desde el JSON
+  normalizaMakes(MAKES_DATA).forEach(m => {
+    if (!RESERVED.includes(m.name)) opciones[m.name] = m.models;
+  });
+
+  guardarLocal('opciones', opciones);
+  MAKES_APLICADO = true;
+}
 
 
 // -------- Helpers seguros --------
@@ -87,15 +121,23 @@ function renderInicial() {
 }
 
 export function configurarBotonesDinamicos() {
-  // 1) Garantiza datos y pinta una vez
+  // ✅ 1) Usa JSON si existe; si no, luego cae al seed
+  aplicarMakesDesdeJSON();
+
+  // 2) Respaldo para que siempre haya botones
   seedSiVacio();
+
+  // 3) Pinta una vez
   renderInicial();
 
-  // 2) Listeners (solo una vez cada uno)
+  // ✅ 4) Redibujar modelos cuando el usuario elige otra marca
+  bindOnce(marcasDiv, 'click', () => {
+    const marca = (inputMarca.value || '').trim();
+    const modelos = A(opciones[marca]); // A() ya te asegura []
+    renderBotones(modelos, modelosDiv, inputModelo);
+  }, 'repaintModelosAlElegirMarca');
 
-  // ======================
-  // Marca
-  // ======================
+
   bindOnce(btnAgregarMarca, 'click', () => {
     const nuevaMarca = (prompt('Escribe el nombre de la nueva marca:') || '').trim();
     if (!nuevaMarca) return;
