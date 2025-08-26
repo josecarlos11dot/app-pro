@@ -1,0 +1,1356 @@
+[
+  {
+    "name": "Chevrolet",
+    "slug": "chevrolet",
+    "models": [
+      {
+        "name": "Aveo",
+        "slug": "aveo"
+      },
+      {
+        "name": "Blazer",
+        "slug": "blazer"
+      },
+      {
+        "name": "Captiva",
+        "slug": "captiva"
+      },
+      {
+        "name": "Cavalier",
+        "slug": "cavalier"
+      },
+      {
+        "name": "Equinox",
+        "slug": "equinox"
+      },
+      {
+        "name": "Groove",
+        "slug": "groove"
+      },
+      {
+        "name": "Onix",
+        "slug": "onix"
+      },
+      {
+        "name": "S10 Max",
+        "slug": "s10-max"
+      },
+      {
+        "name": "Suburban",
+        "slug": "suburban"
+      },
+      {
+        "name": "Tahoe",
+        "slug": "tahoe"
+      },
+      {
+        "name": "Tornado Van",
+        "slug": "tornado-van"
+      },
+      {
+        "name": "Tracker",
+        "slug": "tracker"
+      },
+      {
+        "name": "Trax",
+        "slug": "trax"
+      }
+    ]
+  },
+  {
+    "name": "Nissan",
+    "slug": "nissan",
+    "models": [
+      {
+        "name": "Altima",
+        "slug": "altima"
+      },
+      {
+        "name": "Frontier",
+        "slug": "frontier"
+      },
+      {
+        "name": "Kicks",
+        "slug": "kicks"
+      },
+      {
+        "name": "March",
+        "slug": "march"
+      },
+      {
+        "name": "Pathfinder",
+        "slug": "pathfinder"
+      },
+      {
+        "name": "Sentra",
+        "slug": "sentra"
+      },
+      {
+        "name": "Urvan",
+        "slug": "urvan"
+      },
+      {
+        "name": "Versa",
+        "slug": "versa"
+      },
+      {
+        "name": "X-Trail",
+        "slug": "x-trail"
+      }
+    ]
+  },
+  {
+    "name": "Volkswagen",
+    "slug": "volkswagen",
+    "models": [
+      {
+        "name": "Jetta",
+        "slug": "jetta"
+      },
+      {
+        "name": "Nivus",
+        "slug": "nivus"
+      },
+      {
+        "name": "Polo",
+        "slug": "polo"
+      },
+      {
+        "name": "T-Cross",
+        "slug": "t-cross"
+      },
+      {
+        "name": "Taos",
+        "slug": "taos"
+      },
+      {
+        "name": "Teramont",
+        "slug": "teramont"
+      },
+      {
+        "name": "Tiguan",
+        "slug": "tiguan"
+      },
+      {
+        "name": "Virtus",
+        "slug": "virtus"
+      }
+    ]
+  },
+  {
+    "name": "Toyota",
+    "slug": "toyota",
+    "models": [
+      {
+        "name": "Avanza",
+        "slug": "avanza"
+      },
+      {
+        "name": "Camry",
+        "slug": "camry"
+      },
+      {
+        "name": "Corolla",
+        "slug": "corolla"
+      },
+      {
+        "name": "Corolla Cross",
+        "slug": "corolla-cross"
+      },
+      {
+        "name": "Highlander",
+        "slug": "highlander"
+      },
+      {
+        "name": "Hilux",
+        "slug": "hilux"
+      },
+      {
+        "name": "Prius",
+        "slug": "prius"
+      },
+      {
+        "name": "RAV4",
+        "slug": "rav4"
+      },
+      {
+        "name": "Raize",
+        "slug": "raize"
+      },
+      {
+        "name": "Tacoma",
+        "slug": "tacoma"
+      },
+      {
+        "name": "Yaris",
+        "slug": "yaris"
+      }
+    ]
+  },
+  {
+    "name": "Kia",
+    "slug": "kia",
+    "models": [
+      {
+        "name": "Carnival",
+        "slug": "carnival"
+      },
+      {
+        "name": "Forte",
+        "slug": "forte"
+      },
+      {
+        "name": "K3",
+        "slug": "k3"
+      },
+      {
+        "name": "K5",
+        "slug": "k5"
+      },
+      {
+        "name": "Rio Hatchback",
+        "slug": "rio-hatchback"
+      },
+      {
+        "name": "Seltos",
+        "slug": "seltos"
+      },
+      {
+        "name": "Sorento",
+        "slug": "sorento"
+      },
+      {
+        "name": "Soul",
+        "slug": "soul"
+      },
+      {
+        "name": "Sportage",
+        "slug": "sportage"
+      }
+    ]
+  },
+  {
+    "name": "Hyundai",
+    "slug": "hyundai",
+    "models": [
+      {
+        "name": "Accent",
+        "slug": "accent"
+      },
+      {
+        "name": "Creta",
+        "slug": "creta"
+      },
+      {
+        "name": "Elantra",
+        "slug": "elantra"
+      },
+      {
+        "name": "Grand i10",
+        "slug": "grand-i10"
+      },
+      {
+        "name": "Grand i10 Sedan",
+        "slug": "grand-i10-sedan"
+      },
+      {
+        "name": "HB20",
+        "slug": "hb20"
+      },
+      {
+        "name": "Santa Fe",
+        "slug": "santa-fe"
+      },
+      {
+        "name": "Tucson",
+        "slug": "tucson"
+      }
+    ]
+  },
+  {
+    "name": "Mazda",
+    "slug": "mazda",
+    "models": [
+      {
+        "name": "2",
+        "slug": "2"
+      },
+      {
+        "name": "3",
+        "slug": "3"
+      },
+      {
+        "name": "CX-30",
+        "slug": "cx-30"
+      },
+      {
+        "name": "CX-5",
+        "slug": "cx-5"
+      },
+      {
+        "name": "CX-50",
+        "slug": "cx-50"
+      },
+      {
+        "name": "CX-90",
+        "slug": "cx-90"
+      },
+      {
+        "name": "MX-5",
+        "slug": "mx-5"
+      }
+    ]
+  },
+  {
+    "name": "Honda",
+    "slug": "honda",
+    "models": [
+      {
+        "name": "Accord",
+        "slug": "accord"
+      },
+      {
+        "name": "BR-V",
+        "slug": "br-v"
+      },
+      {
+        "name": "CR-V",
+        "slug": "cr-v"
+      },
+      {
+        "name": "City",
+        "slug": "city"
+      },
+      {
+        "name": "Civic",
+        "slug": "civic"
+      },
+      {
+        "name": "HR-V",
+        "slug": "hr-v"
+      },
+      {
+        "name": "Pilot",
+        "slug": "pilot"
+      }
+    ]
+  },
+  {
+    "name": "Ford",
+    "slug": "ford",
+    "models": [
+      {
+        "name": "Bronco",
+        "slug": "bronco"
+      },
+      {
+        "name": "Bronco Sport",
+        "slug": "bronco-sport"
+      },
+      {
+        "name": "Edge",
+        "slug": "edge"
+      },
+      {
+        "name": "Escape",
+        "slug": "escape"
+      },
+      {
+        "name": "Expedition",
+        "slug": "expedition"
+      },
+      {
+        "name": "F-250",
+        "slug": "f-250"
+      },
+      {
+        "name": "Lobo (F-150)",
+        "slug": "lobo-f-150"
+      },
+      {
+        "name": "Maverick",
+        "slug": "maverick"
+      },
+      {
+        "name": "Ranger",
+        "slug": "ranger"
+      },
+      {
+        "name": "Territory",
+        "slug": "territory"
+      }
+    ]
+  },
+  {
+    "name": "Suzuki",
+    "slug": "suzuki",
+    "models": [
+      {
+        "name": "Baleno",
+        "slug": "baleno"
+      },
+      {
+        "name": "Ertiga",
+        "slug": "ertiga"
+      },
+      {
+        "name": "Fronx",
+        "slug": "fronx"
+      },
+      {
+        "name": "Ignis",
+        "slug": "ignis"
+      },
+      {
+        "name": "Jimny",
+        "slug": "jimny"
+      },
+      {
+        "name": "S-Cross",
+        "slug": "s-cross"
+      },
+      {
+        "name": "Swift",
+        "slug": "swift"
+      },
+      {
+        "name": "Vitara",
+        "slug": "vitara"
+      }
+    ]
+  },
+  {
+    "name": "Renault",
+    "slug": "renault",
+    "models": [
+      {
+        "name": "Duster",
+        "slug": "duster"
+      },
+      {
+        "name": "Koleos",
+        "slug": "koleos"
+      },
+      {
+        "name": "Kwid",
+        "slug": "kwid"
+      },
+      {
+        "name": "Logan",
+        "slug": "logan"
+      },
+      {
+        "name": "Oroch",
+        "slug": "oroch"
+      },
+      {
+        "name": "Sandero",
+        "slug": "sandero"
+      },
+      {
+        "name": "Stepway",
+        "slug": "stepway"
+      }
+    ]
+  },
+  {
+    "name": "Peugeot",
+    "slug": "peugeot",
+    "models": [
+      {
+        "name": "2008",
+        "slug": "2008"
+      },
+      {
+        "name": "208",
+        "slug": "208"
+      },
+      {
+        "name": "3008",
+        "slug": "3008"
+      },
+      {
+        "name": "5008",
+        "slug": "5008"
+      },
+      {
+        "name": "Partner",
+        "slug": "partner"
+      },
+      {
+        "name": "Rifter",
+        "slug": "rifter"
+      }
+    ]
+  },
+  {
+    "name": "SEAT",
+    "slug": "seat",
+    "models": [
+      {
+        "name": "Arona",
+        "slug": "arona"
+      },
+      {
+        "name": "Ateca",
+        "slug": "ateca"
+      },
+      {
+        "name": "Ibiza",
+        "slug": "ibiza"
+      },
+      {
+        "name": "León",
+        "slug": "leon"
+      },
+      {
+        "name": "Tarraco",
+        "slug": "tarraco"
+      }
+    ]
+  },
+  {
+    "name": "Audi",
+    "slug": "audi",
+    "models": [
+      {
+        "name": "A3",
+        "slug": "a3"
+      },
+      {
+        "name": "A4",
+        "slug": "a4"
+      },
+      {
+        "name": "A5",
+        "slug": "a5"
+      },
+      {
+        "name": "A6",
+        "slug": "a6"
+      },
+      {
+        "name": "Q2",
+        "slug": "q2"
+      },
+      {
+        "name": "Q3",
+        "slug": "q3"
+      },
+      {
+        "name": "Q5",
+        "slug": "q5"
+      },
+      {
+        "name": "Q7",
+        "slug": "q7"
+      },
+      {
+        "name": "Q8",
+        "slug": "q8"
+      },
+      {
+        "name": "e-tron",
+        "slug": "e-tron"
+      }
+    ]
+  },
+  {
+    "name": "BMW",
+    "slug": "bmw",
+    "models": [
+      {
+        "name": "Serie 1",
+        "slug": "serie-1"
+      },
+      {
+        "name": "Serie 2",
+        "slug": "serie-2"
+      },
+      {
+        "name": "Serie 3",
+        "slug": "serie-3"
+      },
+      {
+        "name": "Serie 4",
+        "slug": "serie-4"
+      },
+      {
+        "name": "Serie 5",
+        "slug": "serie-5"
+      },
+      {
+        "name": "X1",
+        "slug": "x1"
+      },
+      {
+        "name": "X2",
+        "slug": "x2"
+      },
+      {
+        "name": "X3",
+        "slug": "x3"
+      },
+      {
+        "name": "X4",
+        "slug": "x4"
+      },
+      {
+        "name": "X5",
+        "slug": "x5"
+      },
+      {
+        "name": "X6",
+        "slug": "x6"
+      },
+      {
+        "name": "i4",
+        "slug": "i4"
+      },
+      {
+        "name": "iX",
+        "slug": "ix"
+      },
+      {
+        "name": "iX3",
+        "slug": "ix3"
+      }
+    ]
+  },
+  {
+    "name": "Mercedes-Benz",
+    "slug": "mercedes-benz",
+    "models": [
+      {
+        "name": "C-Class",
+        "slug": "c-class"
+      },
+      {
+        "name": "CLA",
+        "slug": "cla"
+      },
+      {
+        "name": "Clase A",
+        "slug": "clase-a"
+      },
+      {
+        "name": "E-Class",
+        "slug": "e-class"
+      },
+      {
+        "name": "GLA",
+        "slug": "gla"
+      },
+      {
+        "name": "GLB",
+        "slug": "glb"
+      },
+      {
+        "name": "GLC",
+        "slug": "glc"
+      },
+      {
+        "name": "GLE",
+        "slug": "gle"
+      },
+      {
+        "name": "GLS",
+        "slug": "gls"
+      },
+      {
+        "name": "S-Class",
+        "slug": "s-class"
+      }
+    ]
+  },
+  {
+    "name": "MINI",
+    "slug": "mini",
+    "models": [
+      {
+        "name": "3 Puertas",
+        "slug": "3-puertas"
+      },
+      {
+        "name": "5 Puertas",
+        "slug": "5-puertas"
+      },
+      {
+        "name": "Clubman",
+        "slug": "clubman"
+      },
+      {
+        "name": "Convertible",
+        "slug": "convertible"
+      },
+      {
+        "name": "Countryman",
+        "slug": "countryman"
+      }
+    ]
+  },
+  {
+    "name": "Jeep",
+    "slug": "jeep",
+    "models": [
+      {
+        "name": "Compass",
+        "slug": "compass"
+      },
+      {
+        "name": "Gladiator",
+        "slug": "gladiator"
+      },
+      {
+        "name": "Grand Cherokee",
+        "slug": "grand-cherokee"
+      },
+      {
+        "name": "Renegade",
+        "slug": "renegade"
+      },
+      {
+        "name": "Wrangler",
+        "slug": "wrangler"
+      }
+    ]
+  },
+  {
+    "name": "Dodge",
+    "slug": "dodge",
+    "models": [
+      {
+        "name": "Attitude",
+        "slug": "attitude"
+      },
+      {
+        "name": "Charger",
+        "slug": "charger"
+      },
+      {
+        "name": "Durango",
+        "slug": "durango"
+      },
+      {
+        "name": "Journey",
+        "slug": "journey"
+      }
+    ]
+  },
+  {
+    "name": "RAM",
+    "slug": "ram",
+    "models": [
+      {
+        "name": "1500",
+        "slug": "1500"
+      },
+      {
+        "name": "1500 HFE",
+        "slug": "1500-hfe"
+      },
+      {
+        "name": "2500",
+        "slug": "2500"
+      },
+      {
+        "name": "4000",
+        "slug": "4000"
+      },
+      {
+        "name": "700",
+        "slug": "700"
+      }
+    ]
+  },
+  {
+    "name": "FIAT",
+    "slug": "fiat",
+    "models": [
+      {
+        "name": "500",
+        "slug": "500"
+      },
+      {
+        "name": "Argo",
+        "slug": "argo"
+      },
+      {
+        "name": "Cronos",
+        "slug": "cronos"
+      },
+      {
+        "name": "Fastback",
+        "slug": "fastback"
+      },
+      {
+        "name": "Mobi",
+        "slug": "mobi"
+      },
+      {
+        "name": "Pulse",
+        "slug": "pulse"
+      }
+    ]
+  },
+  {
+    "name": "Mitsubishi",
+    "slug": "mitsubishi",
+    "models": [
+      {
+        "name": "Eclipse Cross",
+        "slug": "eclipse-cross"
+      },
+      {
+        "name": "L200",
+        "slug": "l200"
+      },
+      {
+        "name": "Mirage G4",
+        "slug": "mirage-g4"
+      },
+      {
+        "name": "Outlander",
+        "slug": "outlander"
+      },
+      {
+        "name": "Outlander PHEV",
+        "slug": "outlander-phev"
+      }
+    ]
+  },
+  {
+    "name": "JAC",
+    "slug": "jac",
+    "models": [
+      {
+        "name": "E10X",
+        "slug": "e10x"
+      },
+      {
+        "name": "Frison T8",
+        "slug": "frison-t8"
+      },
+      {
+        "name": "J4",
+        "slug": "j4"
+      },
+      {
+        "name": "J7",
+        "slug": "j7"
+      },
+      {
+        "name": "Sei2 (JS2)",
+        "slug": "sei2-js2"
+      },
+      {
+        "name": "Sei3 (JS3)",
+        "slug": "sei3-js3"
+      },
+      {
+        "name": "Sei4 (JS4)",
+        "slug": "sei4-js4"
+      }
+    ]
+  },
+  {
+    "name": "MG",
+    "slug": "mg",
+    "models": [
+      {
+        "name": "HS",
+        "slug": "hs"
+      },
+      {
+        "name": "MG GT",
+        "slug": "mg-gt"
+      },
+      {
+        "name": "MG One",
+        "slug": "mg-one"
+      },
+      {
+        "name": "MG5",
+        "slug": "mg5"
+      },
+      {
+        "name": "RX5",
+        "slug": "rx5"
+      },
+      {
+        "name": "ZS",
+        "slug": "zs"
+      }
+    ]
+  },
+  {
+    "name": "Volvo",
+    "slug": "volvo",
+    "models": [
+      {
+        "name": "C40",
+        "slug": "c40"
+      },
+      {
+        "name": "S60",
+        "slug": "s60"
+      },
+      {
+        "name": "S90",
+        "slug": "s90"
+      },
+      {
+        "name": "XC40",
+        "slug": "xc40"
+      },
+      {
+        "name": "XC60",
+        "slug": "xc60"
+      },
+      {
+        "name": "XC90",
+        "slug": "xc90"
+      }
+    ]
+  },
+  {
+    "name": "Subaru",
+    "slug": "subaru",
+    "models": [
+      {
+        "name": "Crosstrek",
+        "slug": "crosstrek"
+      },
+      {
+        "name": "Forester",
+        "slug": "forester"
+      },
+      {
+        "name": "Impreza",
+        "slug": "impreza"
+      },
+      {
+        "name": "Legacy",
+        "slug": "legacy"
+      },
+      {
+        "name": "Outback",
+        "slug": "outback"
+      },
+      {
+        "name": "WRX",
+        "slug": "wrx"
+      }
+    ]
+  },
+  {
+    "name": "Porsche",
+    "slug": "porsche",
+    "models": [
+      {
+        "name": "718",
+        "slug": "718"
+      },
+      {
+        "name": "911",
+        "slug": "911"
+      },
+      {
+        "name": "Cayenne",
+        "slug": "cayenne"
+      },
+      {
+        "name": "Macan",
+        "slug": "macan"
+      },
+      {
+        "name": "Panamera",
+        "slug": "panamera"
+      },
+      {
+        "name": "Taycan",
+        "slug": "taycan"
+      }
+    ]
+  },
+  {
+    "name": "Land Rover",
+    "slug": "land-rover",
+    "models": [
+      {
+        "name": "Defender",
+        "slug": "defender"
+      },
+      {
+        "name": "Discovery Sport",
+        "slug": "discovery-sport"
+      },
+      {
+        "name": "Range Rover",
+        "slug": "range-rover"
+      },
+      {
+        "name": "Range Rover Evoque",
+        "slug": "range-rover-evoque"
+      },
+      {
+        "name": "Range Rover Sport",
+        "slug": "range-rover-sport"
+      },
+      {
+        "name": "Range Rover Velar",
+        "slug": "range-rover-velar"
+      }
+    ]
+  },
+  {
+    "name": "Jaguar",
+    "slug": "jaguar",
+    "models": [
+      {
+        "name": "E-PACE",
+        "slug": "e-pace"
+      },
+      {
+        "name": "F-PACE",
+        "slug": "f-pace"
+      },
+      {
+        "name": "F-TYPE",
+        "slug": "f-type"
+      },
+      {
+        "name": "I-PACE",
+        "slug": "i-pace"
+      },
+      {
+        "name": "XE",
+        "slug": "xe"
+      },
+      {
+        "name": "XF",
+        "slug": "xf"
+      }
+    ]
+  },
+  {
+    "name": "Acura",
+    "slug": "acura",
+    "models": [
+      {
+        "name": "Integra",
+        "slug": "integra"
+      },
+      {
+        "name": "MDX",
+        "slug": "mdx"
+      },
+      {
+        "name": "RDX",
+        "slug": "rdx"
+      },
+      {
+        "name": "TLX",
+        "slug": "tlx"
+      }
+    ]
+  },
+  {
+    "name": "Infiniti",
+    "slug": "infiniti",
+    "models": [
+      {
+        "name": "Q50",
+        "slug": "q50"
+      },
+      {
+        "name": "Q60",
+        "slug": "q60"
+      },
+      {
+        "name": "QX50",
+        "slug": "qx50"
+      },
+      {
+        "name": "QX55",
+        "slug": "qx55"
+      },
+      {
+        "name": "QX60",
+        "slug": "qx60"
+      },
+      {
+        "name": "QX80",
+        "slug": "qx80"
+      }
+    ]
+  },
+  {
+    "name": "Lexus",
+    "slug": "lexus",
+    "models": [
+      {
+        "name": "ES",
+        "slug": "es"
+      },
+      {
+        "name": "GX",
+        "slug": "gx"
+      },
+      {
+        "name": "IS",
+        "slug": "is"
+      },
+      {
+        "name": "LS",
+        "slug": "ls"
+      },
+      {
+        "name": "LX",
+        "slug": "lx"
+      },
+      {
+        "name": "NX",
+        "slug": "nx"
+      },
+      {
+        "name": "RX",
+        "slug": "rx"
+      },
+      {
+        "name": "UX",
+        "slug": "ux"
+      }
+    ]
+  },
+  {
+    "name": "Chirey (Chery)",
+    "slug": "chirey-chery",
+    "models": [
+      {
+        "name": "Arrizo 5",
+        "slug": "arrizo-5"
+      },
+      {
+        "name": "Tiggo 2 Pro",
+        "slug": "tiggo-2-pro"
+      },
+      {
+        "name": "Tiggo 4 Pro",
+        "slug": "tiggo-4-pro"
+      },
+      {
+        "name": "Tiggo 7 Pro",
+        "slug": "tiggo-7-pro"
+      },
+      {
+        "name": "Tiggo 8 Pro",
+        "slug": "tiggo-8-pro"
+      }
+    ]
+  },
+  {
+    "name": "BAIC",
+    "slug": "baic",
+    "models": [
+      {
+        "name": "BJ40",
+        "slug": "bj40"
+      },
+      {
+        "name": "D20",
+        "slug": "d20"
+      },
+      {
+        "name": "X25",
+        "slug": "x25"
+      },
+      {
+        "name": "X35",
+        "slug": "x35"
+      }
+    ]
+  },
+  {
+    "name": "BYD",
+    "slug": "byd",
+    "models": [
+      {
+        "name": "Dolphin",
+        "slug": "dolphin"
+      },
+      {
+        "name": "Han",
+        "slug": "han"
+      },
+      {
+        "name": "Seal",
+        "slug": "seal"
+      },
+      {
+        "name": "Song Plus",
+        "slug": "song-plus"
+      },
+      {
+        "name": "Tang",
+        "slug": "tang"
+      },
+      {
+        "name": "Yuan Plus",
+        "slug": "yuan-plus"
+      }
+    ]
+  },
+  {
+    "name": "SEV (JMC)",
+    "slug": "sev-jmc",
+    "models": [
+      {
+        "name": "E-Deer",
+        "slug": "e-deer"
+      },
+      {
+        "name": "E-Tus",
+        "slug": "e-tus"
+      }
+    ]
+  },
+  {
+    "name": "GMC",
+    "slug": "gmc",
+    "models": [
+      {
+        "name": "Acadia",
+        "slug": "acadia"
+      },
+      {
+        "name": "Sierra 1500",
+        "slug": "sierra-1500"
+      },
+      {
+        "name": "Sierra 2500",
+        "slug": "sierra-2500"
+      },
+      {
+        "name": "Terrain",
+        "slug": "terrain"
+      },
+      {
+        "name": "Yukon",
+        "slug": "yukon"
+      }
+    ]
+  },
+  {
+    "name": "Cadillac",
+    "slug": "cadillac",
+    "models": [
+      {
+        "name": "Escalade",
+        "slug": "escalade"
+      },
+      {
+        "name": "XT4",
+        "slug": "xt4"
+      },
+      {
+        "name": "XT5",
+        "slug": "xt5"
+      },
+      {
+        "name": "XT6",
+        "slug": "xt6"
+      }
+    ]
+  },
+  {
+    "name": "Buick",
+    "slug": "buick",
+    "models": [
+      {
+        "name": "Enclave",
+        "slug": "enclave"
+      },
+      {
+        "name": "Encore GX",
+        "slug": "encore-gx"
+      },
+      {
+        "name": "Envision",
+        "slug": "envision"
+      }
+    ]
+  },
+  {
+    "name": "Chrysler",
+    "slug": "chrysler",
+    "models": [
+      {
+        "name": "300",
+        "slug": "300"
+      },
+      {
+        "name": "Pacifica",
+        "slug": "pacifica"
+      }
+    ]
+  },
+  {
+    "name": "Alfa Romeo",
+    "slug": "alfa-romeo",
+    "models": [
+      {
+        "name": "Giulia",
+        "slug": "giulia"
+      },
+      {
+        "name": "Stelvio",
+        "slug": "stelvio"
+      },
+      {
+        "name": "Tonale",
+        "slug": "tonale"
+      }
+    ]
+  },
+  {
+    "name": "Citroën",
+    "slug": "citroen",
+    "models": [
+      {
+        "name": "Berlingo",
+        "slug": "berlingo"
+      },
+      {
+        "name": "C3",
+        "slug": "c3"
+      },
+      {
+        "name": "C4 Cactus",
+        "slug": "c4-cactus"
+      },
+      {
+        "name": "C5 Aircross",
+        "slug": "c5-aircross"
+      }
+    ]
+  },
+  {
+    "name": "SEAT CUPRA",
+    "slug": "seat-cupra",
+    "models": [
+      {
+        "name": "Ateca",
+        "slug": "ateca"
+      },
+      {
+        "name": "Formentor",
+        "slug": "formentor"
+      },
+      {
+        "name": "León",
+        "slug": "leon"
+      }
+    ]
+  }
+]

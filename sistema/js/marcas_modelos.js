@@ -1,5 +1,8 @@
 // js/marcas_modelos.js
-const DATA_URL = 'sistema/data/makes_seed_mx_2025.json';
+
+// Ahora:
+const DATA_URL = 'data/makes_seed_mx_2025.json';
+
 
 let MAKES = [];
 let marcaActiva = null;
