@@ -63,3 +63,24 @@ export async function initMarcasModelos(){
   // Pinta botones
   renderMarcas();
 }
+
+
+// --- Re-render cuando se abre el formulario de "Nuevo" ---
+const BTN_NUEVO = document.getElementById('btnNuevo');
+if (BTN_NUEVO) {
+  BTN_NUEVO.addEventListener('click', () => {
+    // Al abrir el popup, volvemos a pintar y quedamos por encima de otros módulos
+    if (Array.isArray(MAKES) && MAKES.length) {
+      // Limpia y repinta marcas y modelos desde el JSON
+      // (usa las mismas funciones internas del módulo)
+      // Si en tu archivo los nombres son distintos, sustitúyelos.
+      // Aquí asumimos renderMarcas() y renderModelos() como definidas arriba.
+      try {
+        renderMarcas();
+        if (marcaActiva) renderModelos(marcaActiva);
+      } catch (e) {
+        console.error('No pude repintar marcas/modelos al abrir el formulario:', e);
+      }
+    }
+  });
+}
