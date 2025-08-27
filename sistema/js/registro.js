@@ -145,6 +145,24 @@ btnCerrarFormulario.addEventListener('click', (e) => {
 });
 overlayRegistro.addEventListener('click', cerrarFormulario);
 
+// ---- Submit
+registroForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const nuevoRegistro = {
+    placa: (inputPlaca.value || '').trim().toUpperCase(),
+    marca: inputMarca.value || '',
+    modelo: inputModelo.value || '',
+    color: inputColor.value || '',
+    precio: inputPrecio.value || '',
+    lavador: inputLavador.value || ''
+  };
+
+  if (!nuevoRegistro.placa) {
+    alert('Ingresa la placa, por favor.');
+    inputPlaca.focus();
+    return;
+  }
 
   // Evita doble submit
   const btnSubmit = registroForm.querySelector('[type="submit"], button:not([type])');
@@ -183,12 +201,13 @@ overlayRegistro.addEventListener('click', cerrarFormulario);
       ? 'Se agotó el tiempo de espera (red lenta). Inténtalo de nuevo.'
       : `No se pudo guardar el registro: ${err.message}`;
     alert(msg);
-  
+
     _cierrePorGuardado = false;
     restoreBtn();
   }
-     
 });
+
+  
 
 
 // (Opcional) Pintar opciones al cargar el módulo
