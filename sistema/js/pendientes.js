@@ -33,32 +33,44 @@ export async function consumirPendiente(id) {
 export function renderTarjetaPendiente(item, onRegistrar) {
   const card = document.createElement('div');
   card.className = 'pendiente-card';
+  card.dataset.id = String(item?.id ?? '');
+
+  const placaSafe  = String(item?.placa ?? '');
+  const imagenSafe = typeof item?.imagen === 'string' ? item.imagen : '';
 
   card.innerHTML = `
     <div class="pendiente-izq">
-      <div class="placa">${item.placa}</div>
-      <div class="hora">${item.hora ?? ''}</div>
+      <div class="placa">${placaSafe}</div>
+      <div class="hora">${item?.hora ?? ''}</div>
 
-      <!-- ANTES: <button class="btn-registrar">Registrar</button> -->
+      <!-- seguimos usando <a> para el :target del modal -->
       <a class="btn-registrar"
          href="#formulario"
-         data-placa="${item.placa || ''}"
-         data-imagen="${item.imagen || ''}">
+         role="button"
+         aria-controls="formulario"
+         data-placa="${placaSafe}"
+         data-imagen="${imagenSafe}">
         Registrar
       </a>
     </div>
     <div class="pendiente-der">
-      ${item.imagen ? `<img src="${item.imagen}" alt="placa ${item.placa}">` : ''}
+      ${imagenSafe ? `<img src="${imagenSafe}" alt="placa ${placaSafe}">` : ''}
     </div>
   `;
 
-  // Prefill antes de que el hash abra el modal
-  card.querySelector('.btn-registrar')
-      .addEventListener('click', () => {
-        onRegistrar?.(item, card);
-        // IMPORTANTE: no llames preventDefault aquí, deja que el <a> cambie el hash
-      });
+  // Parche clave: precargar y forzar el hash para abrir el modal con :target
+  const btn = card.querySelector('.btn-registrar');
+  btn.addEventListener('click', (e) => {
+    try { onRegistrar?.(item, card); } catch (err) { console.warn('onRegistrar falló:', err); }
+    e.preventDefault(); // robusto ante handlers globales
+    if (location.hash !== '#formulario') {
+      location.hash = '#formulario';
+    } else {
+      // si ya está en #formulario, "retoca" para reenfocar (opcional)
+      location.hash = '';
+      location.hash = '#formulario';
+    }
+  });
 
   return card;
 }
-

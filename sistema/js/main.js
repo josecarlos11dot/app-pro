@@ -250,12 +250,17 @@ if (typeof window !== 'undefined') {
 // ===============================
 function abrirPopupRegistro() {
   try {
-    // Tu lógica nativa para abrir el modal del registro
+    // 1) Abre con la lógica JS si está disponible
     abrirFormulario?.();
+    // 2) Además, fuerza el :target por CSS (robustez ante cambios de estilos)
+    if (location.hash !== '#formulario') {
+      location.hash = '#formulario';
+    }
   } catch (e) {
     console.warn('No se pudo abrir el formulario:', e.message);
   }
 }
+
 
 // ===============================
 // Init

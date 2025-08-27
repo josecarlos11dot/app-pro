@@ -117,35 +117,34 @@ export function cerrarFormulario() {
   filaEditando = null;
   _cierrePorGuardado = false; // reset del flag
   desactivarBotonesActivos();
+
+  // ✅ Si el modal se muestra por :target, limpia el hash para ocultarlo
+  if (location.hash === '#formulario') location.hash = '';
 }
 
+
 // Botón “+ Registro” / “✕ Cerrar”
-btnNuevo.addEventListener('click', () => {
-  const abierto = formulario.classList.contains('activo');
-  abierto ? cerrarFormulario() : abrirFormulario();
+btnNuevo.addEventListener('click', (e) => {
+  e.preventDefault(); // evita navegación del <a>
+  const vaAbrir = (location.hash !== '#formulario');
+
+  if (vaAbrir) {
+    // 1) Abrir por JS si está disponible
+    abrirFormulario?.();
+    // 2) Forzar :target por CSS
+    if (location.hash !== '#formulario') location.hash = '#formulario';
+  } else {
+    cerrarFormulario();
+  }
 });
 
-btnCerrarFormulario.addEventListener('click', cerrarFormulario);
+// Cerrar con la X y con overlay
+btnCerrarFormulario.addEventListener('click', (e) => {
+  e.preventDefault();
+  cerrarFormulario();
+});
 overlayRegistro.addEventListener('click', cerrarFormulario);
 
-// ---- Submit
-registroForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  const nuevoRegistro = {
-    placa: (inputPlaca.value || '').trim().toUpperCase(),
-    marca: inputMarca.value || '',
-    modelo: inputModelo.value || '',
-    color: inputColor.value || '',
-    precio: inputPrecio.value || '',
-    lavador: inputLavador.value || ''
-  };
-
-  if (!nuevoRegistro.placa) {
-    alert('Ingresa la placa, por favor.');
-    inputPlaca.focus();
-    return;
-  }
 
   // Evita doble submit
   const btnSubmit = registroForm.querySelector('[type="submit"], button:not([type])');
